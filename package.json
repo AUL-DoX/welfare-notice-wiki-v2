@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "index": "tsx --tsconfig tsconfig.json scripts/generate-document-index.ts",
+    "ingest-watch-links": "tsx --tsconfig tsconfig.json scripts/ingest-watch-links.ts",
     "import:sapporo-formats": "tsx --tsconfig tsconfig.json scripts/import-sapporo-formats.ts",
     "import:sapporo-care-formats": "tsx --tsconfig tsconfig.json scripts/import-sapporo-care-formats.ts"
   },

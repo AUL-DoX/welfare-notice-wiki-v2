@@ -1082,7 +1082,7 @@ function csvToReadableText(csvText: string) {
     .join("\n");
 }
 
-function slugify(value: string) {
+export function slugify(value: string) {
   const base = value
     .normalize("NFKC")
     .toLowerCase()

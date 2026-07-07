@@ -31,12 +31,20 @@ export default async function Home({ searchParams }: HomeProps) {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
                 AUL Welfare Notice Wiki
               </p>
-              <Link
-                href="/henrei-search"
-                className="whitespace-nowrap rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900"
-              >
-                返戻対応マニュアル検索 →
-              </Link>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href="/updates"
+                  className="whitespace-nowrap rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900"
+                >
+                  更新情報 →
+                </Link>
+                <Link
+                  href="/henrei-search"
+                  className="whitespace-nowrap rounded-full bg-orange-500 px-8 py-3 text-lg font-bold text-black shadow-md transition hover:bg-orange-600"
+                >
+                  返戻対応マニュアル検索 →
+                </Link>
+              </div>
             </div>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
               介護と障害福祉サービスの通知文
