@@ -34,7 +34,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <Link
                   href="/updates"
-                  className="whitespace-nowrap rounded-full border border-stone-300 px-4 py-1.5 text-sm font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900"
+                  className="whitespace-nowrap rounded-full bg-emerald-800 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-emerald-900"
                 >
                   更新情報 →
                 </Link>

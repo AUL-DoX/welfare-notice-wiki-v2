@@ -40,7 +40,7 @@ export function WatchLinkPromoteButton({ id }: { id: string }) {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="whitespace-nowrap rounded-full bg-orange-500 px-4 py-2 text-sm font-bold text-black shadow-sm transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+        className="whitespace-nowrap rounded-full bg-emerald-800 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? "保存中..." : "保存する"}
       </button>
