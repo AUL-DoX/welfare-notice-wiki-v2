@@ -69,12 +69,25 @@ export async function POST(request: Request) {
   }
 }
 
+const MAX_FILENAME_BASE_BYTES = 170;
+
+function truncateToBytes(text: string, maxBytes: number): string {
+  let result = "";
+  let bytes = 0;
+  for (const ch of text) {
+    const chBytes = Buffer.byteLength(ch, "utf8");
+    if (bytes + chBytes > maxBytes) break;
+    result += ch;
+    bytes += chBytes;
+  }
+  return result.trim();
+}
+
 async function resolveFileName(title: string, extension: string): Promise<string> {
-  const sanitized = title
-    .replace(/[\\/:*?"<>|]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 150);
+  const sanitized = truncateToBytes(
+    title.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim(),
+    MAX_FILENAME_BASE_BYTES,
+  );
   const base = sanitized || "無題";
   const year = String(new Date().getFullYear());
   const targetDir = path.join(SOURCE_DOCS_DIR, year);

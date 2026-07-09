@@ -34,12 +34,25 @@ async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
+const MAX_FILENAME_BASE_BYTES = 170;
+
+function truncateToBytes(text: string, maxBytes: number): string {
+  let result = "";
+  let bytes = 0;
+  for (const ch of text) {
+    const chBytes = Buffer.byteLength(ch, "utf8");
+    if (bytes + chBytes > maxBytes) break;
+    result += ch;
+    bytes += chBytes;
+  }
+  return result.trim();
+}
+
 async function resolveFileName(title: string, extension: string, targetDir: string): Promise<string> {
-  const sanitized = title
-    .replace(/[\\/:*?"<>|]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 150);
+  const sanitized = truncateToBytes(
+    title.replace(/[\\/:*?"<>|]/g, " ").replace(/\s+/g, " ").trim(),
+    MAX_FILENAME_BASE_BYTES,
+  );
   const base = sanitized || "無題";
 
   let candidate = `${base}${extension}`;
