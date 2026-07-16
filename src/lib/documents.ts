@@ -6,7 +6,7 @@ import { XMLParser } from "fast-xml-parser";
 import matter from "gray-matter";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { extractDocxText, extractXlsxText } from "@/lib/office-text";
-import { commitJsonMapEntry, isGithubConfigured } from "@/lib/github";
+import { commitJsonMapEntries, commitJsonMapEntry, isGithubConfigured } from "@/lib/github";
 
 export const SOURCE_DOCS_DIR = path.join(process.cwd(), "source-docs");
 export const META_DIR = path.join(SOURCE_DOCS_DIR, "meta");
@@ -273,6 +273,57 @@ export async function updateDocumentCategory(slug: string, category: DocumentCat
   }
 
   return { slug: normalizedSlug, category };
+}
+
+export async function updateDocumentCategories(
+  changes: { slug: string; category: DocumentCategory }[],
+): Promise<{ slug: string; category: DocumentCategory }[]> {
+  if (changes.length === 0) {
+    return [];
+  }
+
+  const normalized = changes.map(({ slug, category }) => {
+    const normalizedSlug = slug.trim();
+    if (!normalizedSlug) {
+      throw new Error("slug is required");
+    }
+    if (!(category in DOCUMENT_CATEGORY_LABELS)) {
+      throw new Error("invalid category");
+    }
+    return { slug: normalizedSlug, category };
+  });
+
+  const entries = Object.fromEntries(normalized.map(({ slug, category }) => [slug, category]));
+
+  // 本番（Vercel）はファイル書き込み不可のため、GitHub 連携があればそちらへ
+  // まとめて1コミットで反映する。Vercel の自動デプロイで本番へ反映される。
+  if (isGithubConfigured()) {
+    await commitJsonMapEntries(
+      "data/document-categories.json",
+      entries,
+      `Set category for ${normalized.length} document(s)`,
+    );
+    return normalized;
+  }
+
+  // ローカル実行時はファイルへ直接書き込む。
+  const categoryMap = await loadCategoryMap();
+  Object.assign(categoryMap, entries);
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(CATEGORY_FILE_PATH, `${JSON.stringify(categoryMap, null, 2)}\n`, "utf8");
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "EROFS" || code === "EPERM") {
+      throw new Error(
+        "本番環境ではカテゴリ保存ができません。GITHUB_TOKEN を設定するか、ローカルでJSONを更新して git push してください。",
+      );
+    }
+
+    throw error;
+  }
+
+  return normalized;
 }
 
 /**

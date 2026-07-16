@@ -108,15 +108,19 @@ async function putRepoFile(
   return response;
 }
 
+const MAX_COMMIT_ATTEMPTS = 5;
+
 /**
- * data/document-categories.json 内の 1 件のスラッグに対するカテゴリ上書きを
- * GitHub にコミットする。書き込み競合（他の変更が先に入った場合）は
- * 最新の sha を取り直して一度だけ再試行する。
+ * data/document-categories.json に複数件のカテゴリ上書きをまとめて GitHub へ
+ * コミットする（1 回の PUT = 1 コミット = 1 回のデプロイ）。管理画面で
+ * 何件も連続して分類する場合に、1 件ずつ個別コミットすると sha 競合
+ * （HTTP 409）や無駄なデプロイの連発を招くため、呼び出し側で変更をまとめてから
+ * 一括で渡すこと。ファイルの取得と書き込みの間に別の変更が割り込んだ場合は、
+ * 最新の sha を取り直して複数回（バックオフ付き）再試行する。
  */
-export async function commitJsonMapEntry(
+export async function commitJsonMapEntries(
   filePath: string,
-  key: string,
-  value: string,
+  entries: Record<string, string>,
   commitMessage: string,
 ): Promise<void> {
   const config = getGithubConfig();
@@ -124,10 +128,10 @@ export async function commitJsonMapEntry(
     throw new Error("GitHub 連携が設定されていません（GITHUB_TOKEN 未設定）。");
   }
 
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < MAX_COMMIT_ATTEMPTS; attempt += 1) {
     const existing = await getRepoFile(config, filePath);
     const map = parseJsonMap(existing?.content);
-    map[key] = value;
+    Object.assign(map, entries);
     const nextContent = `${JSON.stringify(map, null, 2)}\n`;
 
     const response = await putRepoFile(config, filePath, nextContent, commitMessage, existing?.sha);
@@ -135,14 +139,28 @@ export async function commitJsonMapEntry(
       return;
     }
 
-    // 409 = sha 競合。最新を取り直して再試行する。
-    if (response.status === 409 && attempt === 0) {
+    // 409 = sha 競合。少し待ってから最新の sha を取り直して再試行する。
+    if (response.status === 409 && attempt < MAX_COMMIT_ATTEMPTS - 1) {
+      await sleep(150 + Math.random() * 250);
       continue;
     }
 
     const detail = await response.text().catch(() => "");
     throw new Error(`GitHub へのコミットに失敗しました（HTTP ${response.status}）。${detail.slice(0, 200)}`);
   }
+}
+
+export async function commitJsonMapEntry(
+  filePath: string,
+  key: string,
+  value: string,
+  commitMessage: string,
+): Promise<void> {
+  return commitJsonMapEntries(filePath, { [key]: value }, commitMessage);
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function parseJsonMap(raw: string | undefined): Record<string, string> {
