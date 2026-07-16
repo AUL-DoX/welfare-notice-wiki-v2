@@ -17,6 +17,7 @@ type Props = {
 export function CategorySelector({ slug, category, compact = false, editable = false, adminToken = null }: Props) {
   const router = useRouter();
   const [savingCategory, setSavingCategory] = useState<DocumentCategory | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function updateCategory(nextCategory: DocumentCategory) {
     if (nextCategory === category) {
@@ -24,6 +25,7 @@ export function CategorySelector({ slug, category, compact = false, editable = f
     }
 
     setSavingCategory(nextCategory);
+    setError(null);
 
     try {
       const response = await fetch("/api/categories", {
@@ -38,15 +40,17 @@ export function CategorySelector({ slug, category, compact = false, editable = f
         }),
       });
 
+      const payload = (await response.json().catch(() => ({}))) as { error?: string };
+
       if (!response.ok) {
-        throw new Error("カテゴリの保存に失敗しました。");
+        throw new Error(payload.error ?? "カテゴリの保存に失敗しました。");
       }
 
       startTransition(() => {
         router.refresh();
       });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "カテゴリの保存に失敗しました。");
     } finally {
       setSavingCategory(null);
     }
@@ -81,6 +85,7 @@ export function CategorySelector({ slug, category, compact = false, editable = f
           );
         })}
       </div>
+      {error ? <p className="text-sm font-medium text-rose-600">{error}</p> : null}
     </div>
   );
 }

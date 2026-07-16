@@ -6,6 +6,7 @@ import { XMLParser } from "fast-xml-parser";
 import matter from "gray-matter";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { extractDocxText, extractXlsxText } from "@/lib/office-text";
+import { commitJsonMapEntry, isGithubConfigured } from "@/lib/github";
 
 export const SOURCE_DOCS_DIR = path.join(process.cwd(), "source-docs");
 export const META_DIR = path.join(SOURCE_DOCS_DIR, "meta");
@@ -171,7 +172,7 @@ async function listSourceFiles(dir: string): Promise<string[]> {
 
 export async function getDocumentIndex(query?: string): Promise<SearchResult> {
   const index = await loadPrecomputedDocumentIndex() ?? await buildDocumentIndexData();
-  const documents = index.documents;
+  const documents = await applyCategoryOverrides(index.documents);
   const failedDocuments = index.failedDocuments;
 
   for (const failed of failedDocuments) {
@@ -242,21 +243,53 @@ export async function updateDocumentCategory(slug: string, category: DocumentCat
     throw new Error("invalid category");
   }
 
+  // 本番（Vercel）はファイル書き込み不可のため、GitHub 連携があればそちらへ
+  // コミットする。Vercel の自動デプロイで本番へ反映される。
+  if (isGithubConfigured()) {
+    await commitJsonMapEntry(
+      "data/document-categories.json",
+      normalizedSlug,
+      category,
+      `Set category: ${normalizedSlug} → ${category}`,
+    );
+    return { slug: normalizedSlug, category };
+  }
+
+  // ローカル実行時はファイルへ直接書き込む。
   const categoryMap = await loadCategoryMap();
   categoryMap[normalizedSlug] = category;
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(CATEGORY_FILE_PATH, JSON.stringify(categoryMap, null, 2), "utf8");
+    await fs.writeFile(CATEGORY_FILE_PATH, `${JSON.stringify(categoryMap, null, 2)}\n`, "utf8");
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     if (code === "EROFS" || code === "EPERM") {
-      throw new Error("本番環境ではカテゴリ保存ができません。ローカルでJSONを更新して git push してください。");
+      throw new Error(
+        "本番環境ではカテゴリ保存ができません。GITHUB_TOKEN を設定するか、ローカルでJSONを更新して git push してください。",
+      );
     }
 
     throw error;
   }
 
   return { slug: normalizedSlug, category };
+}
+
+/**
+ * 事前生成インデックスに、管理画面で設定したカテゴリ上書き
+ * （data/document-categories.json）を適用する。Web管理画面での設定を
+ * 最優先とし、18MB のインデックスを再生成せずに本番へ反映できるようにする。
+ */
+async function applyCategoryOverrides(documents: DocumentRecord[]): Promise<DocumentRecord[]> {
+  const overrideMap = await loadCategoryMap();
+  if (Object.keys(overrideMap).length === 0) {
+    return documents;
+  }
+
+  return documents.map((doc) => {
+    const override = overrideMap[doc.slug];
+    return override && override !== doc.category ? { ...doc, category: override } : doc;
+  });
 }
 
 export async function updateDocumentKeywords(slug: string, keywords: string[]) {

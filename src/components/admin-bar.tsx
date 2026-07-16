@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 
@@ -52,6 +53,12 @@ export function AdminBar({ isAdmin }: Props) {
     return (
       <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-amber-900 px-4 py-2 text-sm font-semibold text-white shadow-lg">
         <span>管理者モード中</span>
+        <Link
+          href="/admin"
+          className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium transition hover:bg-white/30"
+        >
+          管理画面
+        </Link>
         <button
           type="button"
           onClick={handleLogout}
