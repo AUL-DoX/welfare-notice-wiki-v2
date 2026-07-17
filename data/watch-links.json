@@ -2,6 +2,110 @@
   "items": [
     {
       "source": "WAM NET",
+      "title": "2026年07月14日　令和8年7月滋賀県甲賀市の土砂崩れに係る災害復旧資金等の取り扱いについて",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2609.pdf",
+      "id": "7bf0f6a81ea9f882",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年07月14日-令和8年7月滋賀県甲賀市の土砂崩れに係る災害復旧資金等の取り扱いについて"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年07月03日　2024年度日中活動系障害福祉サービスの経営状況に関するリサーチレポートについて",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2608.pdf",
+      "id": "79ebe24b6629862c",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年07月03日-2024年度日中活動系障害福祉サービスの経営状況に関するリサーチレポートについて"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年07月03日　病院経営動向調査(2026年6月)の結果について",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2607.pdf",
+      "id": "3155fcdd02dec89f",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年07月03日-病院経営動向調査-2026年6月-の結果について"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年07月03日　社会福祉法人経営動向調査(2026年6月)の結果について",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2606.pdf",
+      "id": "db463dbea9bd35c9",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年07月03日-社会福祉法人経営動向調査-2026年6月-の結果について"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年06月25日　令和8年6月24日からの大雨に伴う災害にかかる災害復旧資金等の取り扱いについて",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2605.pdf",
+      "id": "2f1f86181982187d",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年06月25日-令和8年6月24日からの大雨に伴う災害にかかる災害復旧資金等の取り扱いについて"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年04月24日　令和8年岩手県大槌町の林野火災に係る災害復旧資金等の取り扱いについて",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2604.pdf",
+      "id": "509d42862c94050e",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "2026年04月24日-令和8年岩手県大槌町の林野火災に係る災害復旧資金等の取り扱いについて"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（統計・報告）",
+      "title": "2026年7月10日掲載 介護保険事業状況報告（暫定）（令和８年４月分） NEW",
+      "url": "https://www.mhlw.go.jp/topics/kaigo/osirase/jigyo/m26/2604.html",
+      "id": "f57b40d689c99690",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1525 「「医療計画及び介護保険事業（支援）計画における整備目標及びサービスの量の見込みに係る整合性の確保について」の一部改正について」 の送付について［335KB］",
+      "url": "https://www.mhlw.go.jp/content/001722971.pdf",
+      "id": "108c36ec9085691e",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1525-医療計画及び介護保険事業-支援-計画における整備目標及びサービスの量の見込みに係る整合"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1524&nbsp;「令和６年度介護報酬改定に関するＱ＆Ａ（Vol.18）（令和８年７月 14 日）」 の送付について［273KB］",
+      "url": "https://www.mhlw.go.jp/content/001722883.pdf",
+      "id": "d0b86b253e465303",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1524-nbsp-令和6年度介護報酬改定に関するq-a-vol-18-令和8年7月-14-日-の送付について-273k"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1523「「指定居宅サービスに要する費用の額の算定に関する基準 （訪問通所サービス、居宅療養管理指導及び福祉用具貸与 に係る部分）及び指定居宅介護支援に要する費用の額の算 定に関する基準の制定に伴う実施上の留意事項について」 等の一部改正について」の発出等に伴うＱ＆Ａ(Vol.２) （令和８年７月 13 日）の送付について&nbsp;［198KB］",
+      "url": "https://www.mhlw.go.jp/content/001722713.pdf",
+      "id": "fbc6435001abd89d",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1523-指定居宅サービスに要する費用の額の算定に関する基準-訪問通所サービス-居宅療養管理指導"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "大規模版［881KB］",
+      "url": "https://www.mhlw.go.jp/content/001722556.xlsx",
+      "id": "b5d81034690ff735",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": "大規模版-881kb"
+    },
+    {
+      "source": "厚生労働省 障害者福祉",
+      "title": "2026年7月6日掲載 第77回補装具評価検討会の開催について NEW",
+      "url": "https://www.mhlw.go.jp/stf/hosouguhyouka_kaisai74_00003.html",
+      "id": "53fe2a2eb79f9f50",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 障害者福祉",
+      "title": "2026年7月6日掲載 第76回補装具評価検討会の開催について NEW",
+      "url": "https://www.mhlw.go.jp/stf/hosouguhyouka_kaisai74_00002.html",
+      "id": "25603686c1c2ddd6",
+      "collectedAt": "2026-07-17T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "WAM NET",
       "title": "2026年02月20日　≪福祉医療機構から≫「2024年度軽費老人ホーム(ケアハウス)の経営状況について」を掲載しました。",
       "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2552.pdf",
       "id": "a3dd281a0d6a0c57",
