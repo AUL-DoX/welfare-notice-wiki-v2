@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getDocumentIndex } from "@/lib/documents";
 import { isAdminModeCookie } from "@/lib/admin";
 import { AdminCategoryManager, type AdminDocument } from "@/components/admin-category-manager";
+import { AdminStatusInline } from "@/components/admin-status-inline";
 
 export const dynamic = "force-dynamic";
 
@@ -51,12 +52,15 @@ export default async function AdminPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-900/70">管理画面</p>
             <h1 className="mt-1 text-2xl font-semibold md:text-3xl">サービス種別の設定</h1>
           </div>
-          <Link
-            href="/"
-            className="rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900 md:text-base"
-          >
-            トップへ戻る
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <AdminStatusInline />
+            <Link
+              href="/"
+              className="rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900 md:text-base"
+            >
+              トップへ戻る
+            </Link>
+          </div>
         </div>
 
         <section className="rounded-[2rem] border border-stone-200/80 bg-white/90 p-5 shadow-[0_18px_55px_rgba(55,43,24,0.06)] md:p-6">

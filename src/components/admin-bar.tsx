@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
 
 export function AdminBar({ isAdmin }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const [showLogin, setShowLogin] = useState(false);
   const [token, setToken] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +48,12 @@ export function AdminBar({ isAdmin }: Props) {
     startTransition(() => {
       router.refresh();
     });
+  }
+
+  // 管理画面（/admin）ではヘッダーに同等の表示があるため、固定バーは出さない
+  // （下部の保存バーとの重なりを避けるため）。
+  if (isAdmin && pathname === "/admin") {
+    return null;
   }
 
   if (isAdmin) {
