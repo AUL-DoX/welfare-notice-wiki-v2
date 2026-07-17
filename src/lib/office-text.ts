@@ -6,6 +6,12 @@ const officeXmlParser = new XMLParser({
   ignoreAttributes: false,
   removeNSPrefix: true,
   trimValues: true,
+  // 大きな政府系Excel/Wordは&nbsp;等のエンティティが数千個含まれることがあり、
+  // fast-xml-parserの既定の暴走防止上限（1000件）に正当なファイルが引っかかるため緩和する。
+  processEntities: {
+    enabled: true,
+    maxTotalExpansions: 50000,
+  },
 });
 
 export async function extractXlsxText(filePath: string) {
