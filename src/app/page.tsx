@@ -1,26 +1,65 @@
 import Link from "next/link";
 import { getDocumentIndex } from "@/lib/documents";
-import { DOCUMENT_CATEGORY_LABELS } from "@/lib/document-categories";
+import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { CategorySelector } from "@/components/category-selector";
 import { SourceFileLink } from "@/components/source-file-link";
 import { isAdminModeCookie } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
+const CATEGORY_TAB_ORDER: DocumentCategory[] = ["care", "disability", "common", "unclassified"];
+type CategoryTab = DocumentCategory | "all";
+
+function isDocumentCategory(value: string): value is DocumentCategory {
+  return value in DOCUMENT_CATEGORY_LABELS;
+}
+
+function buildTabHref(query: string, category: CategoryTab): string {
+  const searchParams = new URLSearchParams();
+  if (query) searchParams.set("q", query);
+  if (category !== "all") searchParams.set("category", category);
+  const qs = searchParams.toString();
+  return qs ? `/?${qs}` : "/";
+}
+
 type HomeProps = {
   searchParams: Promise<{
     q?: string;
+    category?: string;
   }>;
 };
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const query = params.q ?? "";
-  const [{ documents, sourceCount, failedDocuments }, isAdmin] = await Promise.all([
+  const categoryParam = params.category ?? "";
+  const categoryFilter: CategoryTab = isDocumentCategory(categoryParam) ? categoryParam : "all";
+
+  const [{ documents: matchedDocuments, sourceCount, failedDocuments }, isAdmin] = await Promise.all([
     getDocumentIndex(query),
     isAdminModeCookie(),
   ]);
+
+  const categoryCounts = matchedDocuments.reduce<Record<CategoryTab, number>>(
+    (counts, doc) => {
+      counts[doc.category] += 1;
+      counts.all += 1;
+      return counts;
+    },
+    { all: 0, care: 0, disability: 0, common: 0, unclassified: 0 },
+  );
+
+  const documents =
+    categoryFilter === "all" ? matchedDocuments : matchedDocuments.filter((doc) => doc.category === categoryFilter);
   const latestDocument = documents[0] ?? null;
+  const heading =
+    categoryFilter === "all"
+      ? query
+        ? `「${query}」の検索結果`
+        : "新着記事"
+      : query
+        ? `「${query}」の検索結果（${DOCUMENT_CATEGORY_LABELS[categoryFilter]}）`
+        : `${DOCUMENT_CATEGORY_LABELS[categoryFilter]}の一覧`;
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f5f1e8_0%,#fcfbf8_26%,#f2f4ec_100%)] text-stone-900">
@@ -56,6 +95,7 @@ export default async function Home({ searchParams }: HomeProps) {
               運用時に追加した関連キーワードを確認できます。
             </p>
             <form className="flex flex-col gap-3 sm:flex-row" action="/">
+              {categoryFilter !== "all" ? <input type="hidden" name="category" value={categoryFilter} /> : null}
               <input
                 type="search"
                 name="q"
@@ -71,7 +111,7 @@ export default async function Home({ searchParams }: HomeProps) {
               </button>
               {query ? (
                 <Link
-                  href="/"
+                  href={buildTabHref("", categoryFilter)}
                   className="rounded-full border border-stone-300 px-6 py-3 text-center text-base font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900 md:text-lg"
                 >
                   検索を解除
@@ -112,16 +152,40 @@ export default async function Home({ searchParams }: HomeProps) {
         ) : null}
 
         <section className="grid gap-3">
+          <div className="flex flex-wrap gap-2">
+            {(["all", ...CATEGORY_TAB_ORDER] as CategoryTab[]).map((tab) => {
+              const isActive = tab === categoryFilter;
+              const label = tab === "all" ? "すべて" : DOCUMENT_CATEGORY_LABELS[tab];
+              return (
+                <Link
+                  key={tab}
+                  href={buildTabHref(query, tab)}
+                  className={[
+                    "rounded-full border px-4 py-2 text-sm font-semibold transition md:text-base",
+                    isActive
+                      ? "border-stone-900 bg-stone-900 text-white"
+                      : "border-stone-300 bg-white text-stone-700 hover:border-stone-400 hover:bg-stone-50",
+                  ].join(" ")}
+                >
+                  {label}
+                  <span className={isActive ? "ml-2 text-stone-300" : "ml-2 text-stone-400"}>
+                    {categoryCounts[tab]}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">Documents</p>
-              <h2 className="mt-1 text-2xl font-semibold">{query ? `「${query}」の検索結果` : "新着記事"}</h2>
+              <h2 className="mt-1 text-2xl font-semibold">{heading}</h2>
             </div>
             <div className="flex items-center gap-3">
               <p className="text-sm text-stone-600">{documents.length}件</p>
               {query ? (
                 <Link
-                  href="/"
+                  href={buildTabHref("", categoryFilter)}
                   className="text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
                 >
                   検索をクリア
@@ -222,7 +286,9 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="rounded-[1.5rem] border border-dashed border-stone-300 bg-white/70 p-8 text-center text-stone-600">
               {query
                 ? "検索に一致する文書がありません。別の表現で試してください。"
-                : "文書が登録されると、ここに新着記事が表示されます。"}
+                : categoryFilter !== "all"
+                  ? `${DOCUMENT_CATEGORY_LABELS[categoryFilter]}に分類された文書がまだありません。`
+                  : "文書が登録されると、ここに新着記事が表示されます。"}
             </div>
           )}
         </section>
