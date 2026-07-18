@@ -152,6 +152,15 @@ export default async function Home({ searchParams }: HomeProps) {
         ) : null}
 
         <section className="grid gap-3">
+          {categoryFilter !== "all" || query ? (
+            <Link
+              href="/"
+              className="w-fit text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
+            >
+              ← Wikiトップへ戻る
+            </Link>
+          ) : null}
+
           <div className="flex flex-wrap gap-2">
             {(["all", ...CATEGORY_TAB_ORDER] as CategoryTab[]).map((tab) => {
               const isActive = tab === categoryFilter;
