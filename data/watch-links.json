@@ -1,6 +1,46 @@
 {
   "items": [
     {
+      "source": "厚生労働省 介護保険最新情報（統計・報告）",
+      "title": "2026年8月10日掲載 介護保険事業状況報告（暫定）（令和８年５月分） NEW",
+      "url": "https://www.mhlw.go.jp/topics/kaigo/osirase/jigyo/m26/2605.html",
+      "id": "a4b7b4c589072194",
+      "collectedAt": "2026-08-14T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1535（「「介護サービス情報の公表」制度の施行について」一部改正について）［425KB］",
+      "url": "https://www.mhlw.go.jp/content/001738725.pdf",
+      "id": "2a40cbfb7cdb159d",
+      "collectedAt": "2026-08-14T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1535-介護サービス情報の公表-制度の施行について-一部改正について-425kb"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "令和８年度 別添１～７",
+      "url": "https://www.mhlw.go.jp/content/001738726.zip",
+      "id": "2b13f148dd55ce11",
+      "collectedAt": "2026-08-14T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "（参考）【事務連絡】介護サービス情報公表システム（生活関連情報）への有料老人ホームの情報公表・検索機能追加等について［233KB］",
+      "url": "https://www.mhlw.go.jp/content/001738727.pdf",
+      "id": "e88f7f33b32a4cea",
+      "collectedAt": "2026-08-14T15:00:00.000Z",
+      "promotedSlug": "参考-事務連絡-介護サービス情報公表システム-生活関連情報-への有料老人ホームの情報公表-検索機能追加等につ"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報Vol.1532（「介護保険制度における利用者負担等の事務処理の取扱いについて」の一部改正について）［13.9MB］",
+      "url": "https://www.mhlw.go.jp/content/001737209.pdf",
+      "id": "4b3c283e5a556089",
+      "collectedAt": "2026-08-14T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1532-介護保険制度における利用者負担等の事務処理の取扱いについて-の一部改正について-13-9mb"
+    },
+    {
       "source": "WAM NET",
       "title": "2026年08月04日　「令和８年度報酬改定について」ページをオープンしました。",
       "url": "https://www.wam.go.jp/content/wamnet/pcpub/top/r8housyu/",
