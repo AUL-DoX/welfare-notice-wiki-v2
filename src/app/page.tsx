@@ -83,6 +83,12 @@ export default async function Home({ searchParams }: HomeProps) {
                 >
                   返戻対応マニュアル検索 →
                 </Link>
+                <Link
+                  href="/shogai-error-search"
+                  className="whitespace-nowrap rounded-full bg-sky-700 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-sky-800"
+                >
+                  障がい福祉エラーコード検索 →
+                </Link>
               </div>
             </div>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
