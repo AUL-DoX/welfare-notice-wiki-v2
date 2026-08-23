@@ -13,6 +13,7 @@
     "import:sapporo-care-formats": "tsx --tsconfig tsconfig.json scripts/import-sapporo-care-formats.ts"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "fast-xml-parser": "^5.5.11",
     "gray-matter": "^4.0.3",
     "jszip": "^3.10.1",

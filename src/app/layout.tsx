@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { isAdminModeCookie } from "@/lib/admin";
 import { AdminBar } from "@/components/admin-bar";
 import "./globals.css";
@@ -21,6 +22,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <AdminBar isAdmin={isAdmin} />
+        <Analytics />
       </body>
     </html>
   );
