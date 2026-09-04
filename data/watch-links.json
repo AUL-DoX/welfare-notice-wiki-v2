@@ -2,6 +2,78 @@
   "items": [
     {
       "source": "WAM NET",
+      "title": "2026年08月31日　≪福祉医療機構から≫「令和8年熊本地震による災害により被災された皆さまへの特例措置の取扱いについて」を掲載しました。",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2615.pdf",
+      "id": "50d9e63f0dc614d0",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": "2026年08月31日-福祉医療機構から-令和8年熊本地震による災害により被災された皆さまへの特例措置の取扱いについて-を"
+    },
+    {
+      "source": "WAM NET",
+      "title": "2026年08月27日　≪福祉医療機構から≫「令和8年8月27日からの大雨に伴う災害にかかる災害復旧資金等の取り扱いについて」を掲載しました。",
+      "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2614.pdf",
+      "id": "53b59c3a920b71d0",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": "2026年08月27日-福祉医療機構から-令和8年8月27日からの大雨に伴う災害にかかる災害復旧資金等の取り扱いについて-を掲"
+    },
+    {
+      "source": "札幌市 福祉・介護",
+      "title": "居宅介護支援事業所における特定事業所集中減算の取扱いについて（8月31日）",
+      "url": "https://www.city.sapporo.jp/kaigo/k200jigyo/tokuteijigyousyo.html",
+      "id": "b2b627f2b69ba1f8",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "札幌市 福祉・介護",
+      "title": "介護人材確保定着研修事業（8月31日）",
+      "url": "https://www.city.sapporo.jp/kaigo/k200jigyo/koyoukannri.html",
+      "id": "67daced457d6eacc",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "札幌市 福祉・介護",
+      "title": "介護事業者向け「人材採用力向上セミナー」と「合同就職相談説明会」の参加事業者を募集しています（8月31日）",
+      "url": "https://www.city.sapporo.jp/kaigo/k200jigyo/seminar.html",
+      "id": "15b92d67bf77c503",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（統計・報告）",
+      "title": "2026年8月31日掲載 介護給付費等実態統計月報（令和８（2026）年５月審査分） NEW",
+      "url": "https://www.mhlw.go.jp/toukei/saikin/hw/kaigo/kyufu/2026/05.html",
+      "id": "95dcdc992f144502",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1540（令和８年度「老人の日・老人週間」の実施について）［6.1MB］",
+      "url": "https://www.mhlw.go.jp/content/001744801.pdf",
+      "id": "cf5ac983171726b4",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1540-令和8年度-老人の日-老人週間-の実施について-6-1mb"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報vol.1539（「介護保険資格確認等WEB サービスとの連携におけるAPI 標準仕様書（第1.0 版）」の公開について）［155KB］",
+      "url": "https://www.mhlw.go.jp/content/001744369.pdf",
+      "id": "0b579cf856d46eea",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1539-介護保険資格確認等web-サービスとの連携におけるapi-標準仕様書-第1-0-版-の公開について"
+    },
+    {
+      "source": "厚生労働省 障害者福祉",
+      "title": "2026年9月8日掲載 第78回補装具評価検討会の開催について NEW",
+      "url": "https://www.mhlw.go.jp/stf/hosouguhyouka_kaisai74_00004.html",
+      "id": "3536dee3c47810e1",
+      "collectedAt": "2026-09-04T15:00:00.000Z",
+      "promotedSlug": null
+    },
+    {
+      "source": "WAM NET",
       "title": "2026年08月20日　≪福祉医療機構から≫「令和8年7月17日から18日にかけての大雨に伴う災害にかかる災害復旧資金等の取り扱いについて」を掲載しました。",
       "url": "https://www.wam.go.jp/hp/wp-content/uploads/pr2613.pdf",
       "id": "c29390eedea84611",
