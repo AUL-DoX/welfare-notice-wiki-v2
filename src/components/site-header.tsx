@@ -32,7 +32,9 @@ export function SiteHeader() {
                 aria-current={isActive ? "page" : undefined}
                 className={[
                   "rounded-full px-4 py-1.5 text-sm font-semibold transition",
-                  isActive ? "bg-stone-900 text-white" : "text-stone-700 hover:bg-stone-100",
+                  isActive
+                    ? "bg-amber-800 text-white"
+                    : "text-stone-700 hover:bg-amber-50 hover:text-amber-900",
                 ].join(" ")}
               >
                 {item.label}
