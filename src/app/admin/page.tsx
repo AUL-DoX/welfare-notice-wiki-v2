@@ -8,7 +8,7 @@ import { AdminStatusInline } from "@/components/admin-status-inline";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "管理画面 | 福祉通知Wiki",
+  title: "管理画面 | AUL Welfare Notice DB",
   robots: { index: false, follow: false },
 };
 

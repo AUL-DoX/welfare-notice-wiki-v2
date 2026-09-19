@@ -66,35 +66,13 @@ export default async function Home({ searchParams }: HomeProps) {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-5 lg:px-8 lg:py-6">
         <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur md:grid-cols-[1.45fr_0.72fr]">
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
-                AUL Welfare Notice Wiki
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href="/updates"
-                  className="whitespace-nowrap rounded-full bg-emerald-800 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-emerald-900"
-                >
-                  更新情報 →
-                </Link>
-                <Link
-                  href="/henrei-search"
-                  className="whitespace-nowrap rounded-full bg-orange-500 px-8 py-3 text-lg font-bold text-black shadow-md transition hover:bg-orange-600"
-                >
-                  返戻対応マニュアル検索 →
-                </Link>
-                <Link
-                  href="/shogai-error-search"
-                  className="whitespace-nowrap rounded-full bg-sky-700 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-sky-800"
-                >
-                  障がい福祉エラーコード検索 →
-                </Link>
-              </div>
-            </div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
+              AUL Welfare Notice DB
+            </p>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
-              介護と障害福祉サービスの通知文
+              介護・障がい福祉の
               <br />
-              Wiki
+              行政情報データベース
             </h1>
             <p className="max-w-4xl text-lg leading-9 text-stone-700 md:text-xl">
               キーワードを入力すると、介護と障害福祉サービスに関する通知文を検索できます。詳細ページでは、
@@ -164,7 +142,7 @@ export default async function Home({ searchParams }: HomeProps) {
               href="/"
               className="w-fit text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
             >
-              ← Wikiトップへ戻る
+              ← トップへ戻る
             </Link>
           ) : null}
 

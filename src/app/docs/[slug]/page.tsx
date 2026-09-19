@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
 
   const keywordStr = doc.keywords.slice(0, 6).join("、");
   return {
-    title: `${doc.title} | 福祉通知Wiki`,
+    title: `${doc.title} | AUL Welfare Notice DB`,
     description: doc.summary
       ? `${doc.summary.slice(0, 100)}　キーワード：${keywordStr}`
       : `${doc.title}のページです。キーワード：${keywordStr}`,

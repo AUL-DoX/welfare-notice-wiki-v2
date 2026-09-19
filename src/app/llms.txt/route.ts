@@ -17,10 +17,10 @@ export async function GET() {
   const order: DocumentCategory[] = ["care", "disability", "common", "unclassified"];
 
   const lines: string[] = [];
-  lines.push("# 介護と障害福祉サービスの通知文Wiki");
+  lines.push("# 介護・障がい福祉の行政情報データベース");
   lines.push("");
   lines.push(
-    "> 介護保険サービスおよび障害福祉サービスに関する厚生労働省・自治体の通知文・様式・実態統計データを検索できるWikiです。原文の該当箇所を強調表示して閲覧できます。"
+    "> 介護保険サービスおよび障害福祉サービスに関する厚生労働省・自治体の通知文・様式・実態統計データを検索できるデータベースです。原文の該当箇所を強調表示して閲覧できます。"
   );
   lines.push("");
   lines.push(`収録文書数: ${documents.length}件（最終更新: ${new Date().toISOString().slice(0, 10)}）`);
