@@ -103,6 +103,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <form className="flex flex-col gap-3 sm:flex-row" action="/">
               {categoryFilter !== "all" ? <input type="hidden" name="category" value={categoryFilter} /> : null}
               <input
+                key={query}
                 type="search"
                 name="q"
                 defaultValue={query}
@@ -120,7 +121,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   href={buildTabHref("", categoryFilter)}
                   className="rounded-full border border-stone-300 px-6 py-3 text-center text-base font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900 md:text-lg"
                 >
-                  検索を解除
+                  検索クリア
                 </Link>
               ) : null}
             </form>
@@ -203,7 +204,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   href={buildTabHref("", categoryFilter)}
                   className="text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
                 >
-                  検索をクリア
+                  検索クリア
                 </Link>
               ) : null}
             </div>
