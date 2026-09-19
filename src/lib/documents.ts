@@ -7,6 +7,7 @@ import matter from "gray-matter";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { extractDocxText, extractXlsxText } from "@/lib/office-text";
 import { commitJsonMapEntries, commitJsonMapEntry, isGithubConfigured } from "@/lib/github";
+import { normalizeForSearch } from "@/lib/search-normalize";
 
 export const SOURCE_DOCS_DIR = path.join(process.cwd(), "source-docs");
 export const META_DIR = path.join(SOURCE_DOCS_DIR, "meta");
@@ -1106,17 +1107,17 @@ function splitIntoSentences(text: string) {
 }
 
 function matchesQuery(doc: DocumentRecord, query: string) {
-  const haystack = [
-    doc.title,
-    doc.issuer ?? "",
-    doc.summary,
-    doc.preview,
-    doc.body,
-    doc.keywords.join(" "),
-    DOCUMENT_CATEGORY_LABELS[doc.category],
-  ]
-    .join("\n")
-    .toLowerCase();
+  const haystack = normalizeForSearch(
+    [
+      doc.title,
+      doc.issuer ?? "",
+      doc.summary,
+      doc.preview,
+      doc.body,
+      doc.keywords.join(" "),
+      DOCUMENT_CATEGORY_LABELS[doc.category],
+    ].join("\n"),
+  ).toLowerCase();
 
   return query
     .split(/\s+/)
@@ -1125,7 +1126,8 @@ function matchesQuery(doc: DocumentRecord, query: string) {
 }
 
 function normalizeQuery(query?: string) {
-  return query?.trim().toLowerCase() ?? "";
+  // 複数キーワードのAND検索用に、空白は区切りとして残す（全角/半角統一のみ行う）。
+  return query ? query.normalize("NFKC").trim().toLowerCase() : "";
 }
 
 function normalizeText(text: string) {

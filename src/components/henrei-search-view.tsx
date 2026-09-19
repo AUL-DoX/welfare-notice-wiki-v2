@@ -18,7 +18,7 @@ export function HenreiSearchView() {
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   const term = query.trim();
-  const normalizedTerm = term.toLowerCase();
+  const normalizedTerm = term.normalize("NFKC").toLowerCase();
 
   const filteredKeys = useMemo(
     () => DATA.order.filter((key) => matchesEntry(DATA.entries[key], normalizedTerm)),

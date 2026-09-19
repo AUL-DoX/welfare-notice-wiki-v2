@@ -1,3 +1,5 @@
+import { normalizeForSearch } from "@/lib/search-normalize";
+
 export interface HenreiEntry {
   code: string | null;
   title: string;
@@ -20,7 +22,9 @@ export function isBrief(entry: HenreiEntry): boolean {
 
 export function matchesEntry(entry: HenreiEntry, normalizedTerm: string): boolean {
   if (!normalizedTerm) return true;
-  const hay = `${entry.code ?? ""} ${entry.title} ${entry.content ?? ""} ${entry.retname ?? ""}`.toLowerCase();
+  const hay = normalizeForSearch(
+    `${entry.code ?? ""} ${entry.title} ${entry.content ?? ""} ${entry.retname ?? ""}`,
+  ).toLowerCase();
   return hay.includes(normalizedTerm);
 }
 
