@@ -753,17 +753,34 @@ async function parsePdf(
     });
 
     let lastY: number | undefined;
+    let lastX: number | undefined;
+    let lastStr: string | undefined;
     let pageText = "";
 
     for (const item of textContent.items) {
       const y = item.transform[5];
       const x = item.transform[4];
+
+      // 縁取り/影付きタイトルなど、同じ文字をごく僅かな座標のずれで複数回描画する
+      // PDFがあるため、同一文字が至近距離で連続する場合は重ね書きとみなして無視する。
+      const isRedrawOfSameGlyph =
+        lastStr === item.str &&
+        lastX !== undefined &&
+        lastY !== undefined &&
+        Math.abs(lastX - x) < 3 &&
+        Math.abs(lastY - y) < 3;
+      if (isRedrawOfSameGlyph) {
+        continue;
+      }
+
       if (lastY === undefined || (Math.abs(lastY - y) < 1 && x >= 0)) {
         pageText += item.str;
       } else {
         pageText += `\n${item.str}`;
       }
       lastY = y;
+      lastX = x;
+      lastStr = item.str;
     }
 
     text += `\n\n${pageText}`;
