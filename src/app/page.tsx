@@ -70,9 +70,7 @@ export default async function Home({ searchParams }: HomeProps) {
               AUL Welfare Notice Wiki
             </p>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
-              介護と障害福祉サービスの通知文
-              <br />
-              Wiki
+              介護と障害福祉サービスの通知文Wiki
             </h1>
             <p className="max-w-4xl text-lg leading-9 text-stone-700 md:text-xl">
               キーワードを入力すると、介護と障害福祉サービスに関する通知文を検索できます。詳細ページでは、
