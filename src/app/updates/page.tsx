@@ -7,7 +7,7 @@ import { WatchLinkPromoteButton } from "@/components/watch-link-promote-button";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "更新情報｜介護・障がい福祉の行政情報データベース",
+  title: "更新情報｜介護と障害福祉サービスの通知文Wiki",
   description: "WAM NET・札幌市・厚生労働省の福祉サイト更新情報を自動収集した一覧です。",
 };
 
@@ -19,17 +19,17 @@ export default async function UpdatesPage() {
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-5 py-5 lg:px-8 lg:py-6">
         <section className="rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
-            AUL Welfare Notice DB
+            AUL Welfare Notice Wiki
           </p>
           <h1 className="mt-1 text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.2rem]">
             更新情報
           </h1>
           <p className="mt-2 max-w-3xl text-base leading-7 text-stone-700 md:text-lg">
             WAM NET・札幌市・厚生労働省の福祉サイトを毎週自動で巡回して収集したリンク一覧です。
-            {isAdmin ? "「保存する」を押すとPDF等のファイルをこのデータベースに永続保存できます。" : null}
+            {isAdmin ? "「保存する」を押すとPDF等のファイルをこのWikiに永続保存できます。" : null}
           </p>
           <Link href="/" className="mt-3 inline-block text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 hover:decoration-amber-900">
-            ← トップへ戻る
+            ← Wikiトップへ戻る
           </Link>
         </section>
 

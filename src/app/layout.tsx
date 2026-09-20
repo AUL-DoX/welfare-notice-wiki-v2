@@ -6,9 +6,9 @@ import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "介護・障がい福祉の行政情報データベース",
+  title: "介護と障害福祉サービスの通知文Wiki",
   description:
-    "介護・障がい福祉サービスに関する行政通知文を検索し、詳細ページで該当の単語や文章を強調表示できるデータベースです。",
+    "介護と障害福祉サービスの通知文を検索し、詳細ページで該当の単語や文章を強調表示できる検索ページです。",
 };
 
 export default async function RootLayout({

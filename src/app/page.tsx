@@ -67,12 +67,12 @@ export default async function Home({ searchParams }: HomeProps) {
         <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur md:grid-cols-[1.45fr_0.72fr]">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
-              AUL Welfare Notice DB
+              AUL Welfare Notice Wiki
             </p>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
-              介護・障がい福祉の
+              介護と障害福祉サービスの通知文
               <br />
-              行政情報データベース
+              Wiki
             </h1>
             <p className="max-w-4xl text-lg leading-9 text-stone-700 md:text-xl">
               キーワードを入力すると、介護と障害福祉サービスに関する通知文を検索できます。詳細ページでは、
@@ -142,7 +142,7 @@ export default async function Home({ searchParams }: HomeProps) {
               href="/"
               className="w-fit text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
             >
-              ← トップへ戻る
+              ← Wikiトップへ戻る
             </Link>
           ) : null}
 

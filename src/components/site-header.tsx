@@ -20,7 +20,7 @@ export function SiteHeader() {
           href="/"
           className="shrink-0 text-sm font-semibold uppercase tracking-[0.2em] text-amber-900/80 transition hover:text-amber-900"
         >
-          AUL Welfare Notice DB
+          AUL Welfare Notice Wiki
         </Link>
         <nav className="flex flex-wrap items-center gap-2">
           {NAV_ITEMS.map((item) => {
