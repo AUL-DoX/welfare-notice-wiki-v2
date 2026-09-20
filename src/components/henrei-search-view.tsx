@@ -17,6 +17,11 @@ export function HenreiSearchView() {
   const [query, setQuery] = useState("");
   const [openKey, setOpenKey] = useState<string | null>(null);
 
+  useEffect(() => {
+    const initialQuery = new URLSearchParams(window.location.search).get("q");
+    if (initialQuery) setQuery(initialQuery);
+  }, []);
+
   const term = query.trim();
   const normalizedTerm = term.normalize("NFKC").toLowerCase();
 

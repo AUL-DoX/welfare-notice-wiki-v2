@@ -4,6 +4,7 @@ import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-
 import { CategorySelector } from "@/components/category-selector";
 import { SourceFileLink } from "@/components/source-file-link";
 import { isAdminModeCookie } from "@/lib/admin";
+import { searchOtherTools } from "@/lib/cross-search";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,7 @@ export default async function Home({ searchParams }: HomeProps) {
     getDocumentIndex(query),
     isAdminModeCookie(),
   ]);
+  const crossSearch = query ? searchOtherTools(query) : null;
 
   const categoryCounts = matchedDocuments.reduce<Record<CategoryTab, number>>(
     (counts, doc) => {
@@ -104,6 +106,62 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="text-sm text-stone-500">現在 {sourceCount} 件収録</p>
           </div>
         </section>
+
+        {crossSearch && (crossSearch.henrei.total > 0 || crossSearch.shogai.total > 0) ? (
+          <section className="grid gap-3 sm:grid-cols-2">
+            {crossSearch.henrei.total > 0 ? (
+              <div className="rounded-[1.5rem] border border-orange-200 bg-orange-50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="text-base font-semibold text-orange-950">
+                    返戻対応マニュアル検索にも一致（{crossSearch.henrei.total}件）
+                  </h2>
+                  <Link
+                    href={`/henrei-search?q=${encodeURIComponent(query)}`}
+                    className="text-sm font-semibold text-orange-900 underline decoration-orange-300 underline-offset-4 hover:decoration-orange-900"
+                  >
+                    すべて見る →
+                  </Link>
+                </div>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {crossSearch.henrei.items.map((match) => (
+                    <li key={match.key} className="text-sm leading-6 text-stone-700">
+                      <span className="mr-2 rounded bg-orange-200/70 px-1.5 py-0.5 font-mono text-xs font-semibold text-orange-950">
+                        {match.entry.code ?? "—"}
+                      </span>
+                      {match.entry.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {crossSearch.shogai.total > 0 ? (
+              <div className="rounded-[1.5rem] border border-sky-200 bg-sky-50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="text-base font-semibold text-sky-950">
+                    障がい福祉エラーコード検索にも一致（{crossSearch.shogai.total}件）
+                  </h2>
+                  <Link
+                    href={`/shogai-error-search?q=${encodeURIComponent(query)}`}
+                    className="text-sm font-semibold text-sky-900 underline decoration-sky-300 underline-offset-4 hover:decoration-sky-900"
+                  >
+                    すべて見る →
+                  </Link>
+                </div>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {crossSearch.shogai.items.map((match) => (
+                    <li key={match.key} className="text-sm leading-6 text-stone-700">
+                      <span className="mr-2 rounded bg-sky-200/70 px-1.5 py-0.5 font-mono text-xs font-semibold text-sky-950">
+                        {match.entry.code}
+                      </span>
+                      {match.entry.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
 
         {failedDocuments.length > 0 ? (
           <section className="rounded-[1.5rem] border border-amber-300 bg-amber-50 p-4 text-amber-950">
