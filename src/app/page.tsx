@@ -64,37 +64,13 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f5f1e8_0%,#fcfbf8_26%,#f2f4ec_100%)] text-stone-900">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-5 lg:px-8 lg:py-6">
-        <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur md:grid-cols-[1.45fr_0.72fr]">
+        <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur">
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
-                AUL Welfare Notice Wiki
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href="/updates"
-                  className="whitespace-nowrap rounded-full bg-emerald-800 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-emerald-900"
-                >
-                  更新情報 →
-                </Link>
-                <Link
-                  href="/henrei-search"
-                  className="whitespace-nowrap rounded-full bg-orange-500 px-8 py-3 text-lg font-bold text-black shadow-md transition hover:bg-orange-600"
-                >
-                  返戻対応マニュアル検索 →
-                </Link>
-                <Link
-                  href="/shogai-error-search"
-                  className="whitespace-nowrap rounded-full bg-sky-700 px-8 py-3 text-lg font-bold text-white shadow-md transition hover:bg-sky-800"
-                >
-                  障がい福祉エラーコード検索 →
-                </Link>
-              </div>
-            </div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
+              AUL Welfare Notice Wiki
+            </p>
             <h1 className="max-w-5xl text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.03em] text-stone-900 md:text-[2.45rem]">
-              介護と障害福祉サービスの通知文
-              <br />
-              Wiki
+              介護と障害福祉サービスの通知文Wiki
             </h1>
             <p className="max-w-4xl text-lg leading-9 text-stone-700 md:text-xl">
               キーワードを入力すると、介護と障害福祉サービスに関する通知文を検索できます。詳細ページでは、
@@ -103,6 +79,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <form className="flex flex-col gap-3 sm:flex-row" action="/">
               {categoryFilter !== "all" ? <input type="hidden" name="category" value={categoryFilter} /> : null}
               <input
+                key={query}
                 type="search"
                 name="q"
                 defaultValue={query}
@@ -120,28 +97,12 @@ export default async function Home({ searchParams }: HomeProps) {
                   href={buildTabHref("", categoryFilter)}
                   className="rounded-full border border-stone-300 px-6 py-3 text-center text-base font-semibold text-stone-700 transition hover:border-amber-900 hover:text-amber-900 md:text-lg"
                 >
-                  検索を解除
+                  検索クリア
                 </Link>
               ) : null}
             </form>
+            <p className="text-sm text-stone-500">現在 {sourceCount} 件収録</p>
           </div>
-
-          <aside className="grid gap-3 self-start rounded-[1.5rem] bg-stone-900 p-4 text-stone-50">
-            <div>
-              <p className="text-base text-stone-300">登録文書数</p>
-              <p className="mt-1 text-4xl font-semibold">{sourceCount}</p>
-            </div>
-            <div>
-              <p className="text-base text-stone-300">このページでできること</p>
-              <p className="mt-1 text-lg leading-8 text-stone-100">
-                単語で検索
-                <br />
-                全文ページへ移動
-                <br />
-                関連キーワードを確認
-              </p>
-            </div>
-          </aside>
         </section>
 
         {failedDocuments.length > 0 ? (
@@ -203,7 +164,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   href={buildTabHref("", categoryFilter)}
                   className="text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
                 >
-                  検索をクリア
+                  検索クリア
                 </Link>
               ) : null}
             </div>

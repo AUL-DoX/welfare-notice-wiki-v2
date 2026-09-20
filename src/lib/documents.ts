@@ -7,6 +7,7 @@ import matter from "gray-matter";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { extractDocxText, extractXlsxText } from "@/lib/office-text";
 import { commitJsonMapEntries, commitJsonMapEntry, isGithubConfigured } from "@/lib/github";
+import { normalizeForSearch } from "@/lib/search-normalize";
 
 export const SOURCE_DOCS_DIR = path.join(process.cwd(), "source-docs");
 export const META_DIR = path.join(SOURCE_DOCS_DIR, "meta");
@@ -752,17 +753,34 @@ async function parsePdf(
     });
 
     let lastY: number | undefined;
+    let lastX: number | undefined;
+    let lastStr: string | undefined;
     let pageText = "";
 
     for (const item of textContent.items) {
       const y = item.transform[5];
       const x = item.transform[4];
+
+      // 縁取り/影付きタイトルなど、同じ文字をごく僅かな座標のずれで複数回描画する
+      // PDFがあるため、同一文字が至近距離で連続する場合は重ね書きとみなして無視する。
+      const isRedrawOfSameGlyph =
+        lastStr === item.str &&
+        lastX !== undefined &&
+        lastY !== undefined &&
+        Math.abs(lastX - x) < 3 &&
+        Math.abs(lastY - y) < 3;
+      if (isRedrawOfSameGlyph) {
+        continue;
+      }
+
       if (lastY === undefined || (Math.abs(lastY - y) < 1 && x >= 0)) {
         pageText += item.str;
       } else {
         pageText += `\n${item.str}`;
       }
       lastY = y;
+      lastX = x;
+      lastStr = item.str;
     }
 
     text += `\n\n${pageText}`;
@@ -1106,17 +1124,17 @@ function splitIntoSentences(text: string) {
 }
 
 function matchesQuery(doc: DocumentRecord, query: string) {
-  const haystack = [
-    doc.title,
-    doc.issuer ?? "",
-    doc.summary,
-    doc.preview,
-    doc.body,
-    doc.keywords.join(" "),
-    DOCUMENT_CATEGORY_LABELS[doc.category],
-  ]
-    .join("\n")
-    .toLowerCase();
+  const haystack = normalizeForSearch(
+    [
+      doc.title,
+      doc.issuer ?? "",
+      doc.summary,
+      doc.preview,
+      doc.body,
+      doc.keywords.join(" "),
+      DOCUMENT_CATEGORY_LABELS[doc.category],
+    ].join("\n"),
+  ).toLowerCase();
 
   return query
     .split(/\s+/)
@@ -1125,7 +1143,8 @@ function matchesQuery(doc: DocumentRecord, query: string) {
 }
 
 function normalizeQuery(query?: string) {
-  return query?.trim().toLowerCase() ?? "";
+  // 複数キーワードのAND検索用に、空白は区切りとして残す（全角/半角統一のみ行う）。
+  return query ? query.normalize("NFKC").trim().toLowerCase() : "";
 }
 
 function normalizeText(text: string) {

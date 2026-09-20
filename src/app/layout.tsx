@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { isAdminModeCookie } from "@/lib/admin";
 import { AdminBar } from "@/components/admin-bar";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default async function RootLayout({
   return (
     <html lang="ja" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        <SiteHeader />
         {children}
         <AdminBar isAdmin={isAdmin} />
         <Analytics />

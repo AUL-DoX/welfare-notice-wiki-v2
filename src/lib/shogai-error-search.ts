@@ -1,3 +1,5 @@
+import { normalizeForSearch } from "@/lib/search-normalize";
+
 export interface ShogaiEntry {
   code: string;
   title: string;
@@ -18,7 +20,9 @@ export function isBrief(entry: ShogaiEntry): boolean {
 
 export function matchesEntry(entry: ShogaiEntry, normalizedTerm: string): boolean {
   if (!normalizedTerm) return true;
-  const hay = `${entry.code} ${entry.title} ${entry.cause ?? ""} ${entry.remedy ?? ""}`.toLowerCase();
+  const hay = normalizeForSearch(
+    `${entry.code} ${entry.title} ${entry.cause ?? ""} ${entry.remedy ?? ""}`,
+  ).toLowerCase();
   return hay.includes(normalizedTerm);
 }
 
