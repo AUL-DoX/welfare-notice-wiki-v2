@@ -64,7 +64,7 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f5f1e8_0%,#fcfbf8_26%,#f2f4ec_100%)] text-stone-900">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-5 lg:px-8 lg:py-6">
-        <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur md:grid-cols-[1.45fr_0.72fr]">
+        <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-900/70">
               AUL Welfare Notice Wiki
@@ -103,24 +103,8 @@ export default async function Home({ searchParams }: HomeProps) {
                 </Link>
               ) : null}
             </form>
+            <p className="text-sm text-stone-500">現在 {sourceCount} 件収録</p>
           </div>
-
-          <aside className="grid gap-3 self-start rounded-[1.5rem] bg-stone-900 p-4 text-stone-50">
-            <div>
-              <p className="text-base text-stone-300">登録文書数</p>
-              <p className="mt-1 text-4xl font-semibold">{sourceCount}</p>
-            </div>
-            <div>
-              <p className="text-base text-stone-300">このページでできること</p>
-              <p className="mt-1 text-lg leading-8 text-stone-100">
-                単語で検索
-                <br />
-                全文ページへ移動
-                <br />
-                関連キーワードを確認
-              </p>
-            </div>
-          </aside>
         </section>
 
         {failedDocuments.length > 0 ? (
