@@ -16,8 +16,15 @@ const CATEGORY_FILE_PATH = path.join(DATA_DIR, "document-categories.json");
 const DOCUMENT_METADATA_FILE_PATH = path.join(DATA_DIR, "document-metadata.json");
 const DOCUMENT_KEYWORDS_FILE_PATH = path.join(DATA_DIR, "document-keywords.json");
 const DOCUMENT_INDEX_FILE_PATH = path.join(DATA_DIR, "document-index.json");
+const DOCUMENT_FILES_FILE_PATH = path.join(DATA_DIR, "document-files.json");
 const require = createRequire(import.meta.url);
 let precomputedIndexCache: DocumentIndexData | null | undefined;
+let documentFileLookupCache: DocumentFileLookup | null | undefined;
+
+type DocumentFileLookup = Record<
+  string,
+  { filePath: string; fileName: string; sourceType: SourceType }
+>;
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -208,6 +215,17 @@ export async function generateDocumentIndexFile() {
   await fs.writeFile(DOCUMENT_INDEX_FILE_PATH, `${JSON.stringify(portableIndex, null, 2)}\n`, "utf8");
   precomputedIndexCache = undefined;
 
+  // 元ファイルを開く/一覧に必要なのはパスだけなので、20MB超の全文入りインデックスとは
+  // 別に、slug→ファイル情報だけの軽量なルックアップを書き出しておく。
+  const fileLookup: DocumentFileLookup = Object.fromEntries(
+    portableIndex.documents.map((doc) => [
+      doc.slug,
+      { filePath: doc.filePath, fileName: doc.fileName, sourceType: doc.sourceType },
+    ]),
+  );
+  await fs.writeFile(DOCUMENT_FILES_FILE_PATH, `${JSON.stringify(fileLookup, null, 2)}\n`, "utf8");
+  documentFileLookupCache = undefined;
+
   return {
     generatedAt: portableIndex.generatedAt,
     documents: portableIndex.documents.length,
@@ -220,7 +238,41 @@ export async function getDocumentBySlug(slug: string) {
   return documents.find((doc) => doc.slug === slug) ?? null;
 }
 
+async function loadDocumentFileLookup(): Promise<DocumentFileLookup | null> {
+  if (documentFileLookupCache !== undefined) {
+    return documentFileLookupCache;
+  }
+
+  try {
+    const raw = await fs.readFile(DOCUMENT_FILES_FILE_PATH, "utf8");
+    documentFileLookupCache = JSON.parse(raw) as DocumentFileLookup;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      documentFileLookupCache = null;
+    } else {
+      throw error;
+    }
+  }
+
+  return documentFileLookupCache;
+}
+
 export async function getDocumentFileBuffer(slug: string) {
+  // まずは軽量なファイル一覧（slug→パス）だけを見る。20MB超の全文入り
+  // インデックスを丸ごと読み込まずに済み、「元ファイルを開く」が速くなる。
+  const lookup = await loadDocumentFileLookup();
+  const entry = lookup?.[slug];
+
+  if (entry) {
+    return {
+      buffer: await fs.readFile(toAbsoluteSourcePath(entry.filePath)),
+      fileName: entry.fileName,
+      sourceType: entry.sourceType,
+    };
+  }
+
+  // ルックアップが無い/該当なしの場合のみ、従来通りフルインデックスから探す
+  // （ルックアップファイルが古い・未生成でも壊れないためのフォールバック）。
   const doc = await getDocumentBySlug(slug);
   if (!doc) {
     return null;
