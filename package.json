@@ -10,6 +10,8 @@
     "index": "tsx --tsconfig tsconfig.json scripts/generate-document-index.ts",
     "assign-doc-ids": "tsx --tsconfig tsconfig.json scripts/assign-doc-ids.ts",
     "ingest-watch-links": "tsx --tsconfig tsconfig.json scripts/ingest-watch-links.ts",
+    "export-to-sheet": "tsx --tsconfig tsconfig.json scripts/export-to-sheet.ts",
+    "sync-from-sheet": "tsx --tsconfig tsconfig.json scripts/sync-from-sheet.ts",
     "import:sapporo-formats": "tsx --tsconfig tsconfig.json scripts/import-sapporo-formats.ts",
     "import:sapporo-care-formats": "tsx --tsconfig tsconfig.json scripts/import-sapporo-care-formats.ts"
   },
