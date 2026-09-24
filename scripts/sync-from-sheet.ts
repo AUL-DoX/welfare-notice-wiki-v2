@@ -4,8 +4,16 @@
  * data/document-keywords.json に反映してインデックスを再生成、
  * コミット＆pushする。
  *
+ * 「変更があったか」は、今の本番の値とではなく、**前回エクスポート時点の
+ * 基準値**（data/sheet-sync-baseline.json）と比較して判定する。つまり、
+ * 「シートの中で人が実際に編集したセル」だけを反映する。これにより、
+ * /admin で行った変更（シート側は未編集のまま）を、シート同期で
+ * 誤って上書きしてしまうことがない。
+ *
  * 既定では「何件変更があるか」を表示するだけで、実際には書き込まない
  * （ドライラン）。反映するには --apply を付けて実行する。
+ * --apply 時は、反映後にシートと基準値を最新状態へ書き戻す
+ * （/admin での変更もシートに取り込まれた状態になる）。
  *
  * 実行: npm run sync-from-sheet            （確認のみ）
  *       npm run sync-from-sheet -- --apply （実際に反映）
@@ -14,14 +22,16 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { readSheetRows } from "../src/lib/google-sheets";
-import { generateDocumentIndexFile, getDocumentIndex } from "../src/lib/documents";
+import { readSheetRows, writeSheetRows } from "../src/lib/google-sheets";
+import { generateDocumentIndexFile } from "../src/lib/documents";
 import { DOCUMENT_CATEGORY_LABELS } from "../src/lib/document-categories";
+import { buildSheetRowsAndBaseline, writeBaseline, type SheetBaseline } from "./export-to-sheet";
 
 const execFileAsync = promisify(execFile);
 const DATA_DIR = path.join(process.cwd(), "data");
 const CATEGORY_FILE_PATH = path.join(DATA_DIR, "document-categories.json");
 const KEYWORDS_FILE_PATH = path.join(DATA_DIR, "document-keywords.json");
+const BASELINE_FILE_PATH = path.join(DATA_DIR, "sheet-sync-baseline.json");
 
 type KeywordMap = Record<string, { manualKeywords: string[] }>;
 
@@ -34,6 +44,22 @@ async function readJson<T>(filePath: string, fallback: T): Promise<T> {
     }
     throw error;
   }
+}
+
+function parseKeywords(raw: string): string[] {
+  // export-to-sheet.ts は半角カンマ+スペース（", "）で結合しているため、
+  // 読み込み側もそれだけを区切りとする。全角「、」も区切りに含めると、
+  // キーワード自体に「、」が含まれるケース（例:「A、B」という1語）を
+  // 誤って分割してしまう。
+  return Array.from(
+    new Set(
+      raw
+        .split(",")
+        .map((keyword) => keyword.trim())
+        .filter(Boolean)
+        .slice(0, 20),
+    ),
+  );
 }
 
 async function main() {
@@ -52,15 +78,16 @@ async function main() {
     throw new Error("ヘッダー行に slug 列が見つかりません。1行目を確認してください。");
   }
 
+  const baseline = await readJson<SheetBaseline>(BASELINE_FILE_PATH, {});
+  if (Object.keys(baseline).length === 0) {
+    console.log(
+      "基準値（data/sheet-sync-baseline.json）がありません。先に `npm run export-to-sheet` を実行してください。",
+    );
+    return;
+  }
+
   const categoryMap = await readJson<Record<string, string>>(CATEGORY_FILE_PATH, {});
   const keywordMap = await readJson<KeywordMap>(KEYWORDS_FILE_PATH, {});
-
-  // 「変更があったか」は、上書きファイル（部分的にしか記録がない）ではなく、
-  // 今実際にサイトへ出ている値（＝exportスクリプトがシートに書き出した値と
-  // 同じもの）と比較する。そうしないと、まだ一度も上書きしていない大多数の
-  // 文書が毎回「変更あり」と誤検知されてしまう。
-  const { documents: currentDocuments } = await getDocumentIndex();
-  const currentBySlug = new Map(currentDocuments.map((doc) => [doc.slug, doc]));
 
   let categoryChanges = 0;
   let keywordChanges = 0;
@@ -69,37 +96,22 @@ async function main() {
     const slug = row[slugIdx]?.trim();
     if (!slug) continue;
 
-    const current = currentBySlug.get(slug);
+    const base = baseline[slug];
 
     if (categoryIdx !== -1) {
       const category = row[categoryIdx]?.trim();
-      if (category && category in DOCUMENT_CATEGORY_LABELS && current && current.category !== category) {
+      if (category && category in DOCUMENT_CATEGORY_LABELS && base && base.category !== category) {
         categoryMap[slug] = category;
         categoryChanges += 1;
       }
     }
 
     if (keywordsIdx !== -1) {
-      const raw = row[keywordsIdx]?.trim();
-      if (raw && current) {
-        // export-to-sheet.ts は半角カンマ+スペース（", "）で結合しているため、
-        // 読み込み側もそれだけを区切りとする。全角「、」も区切りに含めると、
-        // キーワード自体に「、」が含まれるケース（例:「A、B」という1語）を
-        // 誤って分割してしまう。
-        const keywords = Array.from(
-          new Set(
-            raw
-              .split(",")
-              .map((keyword) => keyword.trim())
-              .filter(Boolean)
-              .slice(0, 20),
-          ),
-        );
-        const existing = current.manualKeywords;
-        if (keywords.length > 0 && JSON.stringify(keywords) !== JSON.stringify(existing)) {
-          keywordMap[slug] = { manualKeywords: keywords };
-          keywordChanges += 1;
-        }
+      const raw = row[keywordsIdx]?.trim() ?? "";
+      if (base && raw !== base.keywords) {
+        const keywords = parseKeywords(raw);
+        keywordMap[slug] = { manualKeywords: keywords };
+        keywordChanges += 1;
       }
     }
   }
@@ -128,12 +140,20 @@ async function main() {
   console.log("インデックスを再生成中...");
   await generateDocumentIndexFile();
 
+  // シートと基準値を、今適用した内容＋その他（/adminでの変更等）を含めた
+  // 最新の実態に合わせて書き戻す。次回の同期はここを基準に差分判定される。
+  console.log("シートと基準値を最新化中...");
+  const { rows: freshRows, baseline: freshBaseline } = await buildSheetRowsAndBaseline();
+  await writeSheetRows(freshRows);
+  await writeBaseline(freshBaseline);
+
   const cwd = process.cwd();
   const filesToCommit = [
     ...(categoryChanges > 0 ? [path.join("data", "document-categories.json")] : []),
     ...(keywordChanges > 0 ? [path.join("data", "document-keywords.json")] : []),
     path.join("data", "document-index.json"),
     path.join("data", "document-files.json"),
+    path.join("data", "sheet-sync-baseline.json"),
   ];
 
   await execFileAsync("git", ["add", ...filesToCommit], { cwd });

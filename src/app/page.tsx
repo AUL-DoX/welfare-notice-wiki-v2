@@ -3,7 +3,6 @@ import { getDocumentIndex } from "@/lib/documents";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { CategorySelector } from "@/components/category-selector";
 import { SourceFileLink } from "@/components/source-file-link";
-import { isAdminModeCookie } from "@/lib/admin";
 import { searchOtherTools } from "@/lib/cross-search";
 
 export const dynamic = "force-dynamic";
@@ -36,10 +35,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const categoryParam = params.category ?? "";
   const categoryFilter: CategoryTab = isDocumentCategory(categoryParam) ? categoryParam : "all";
 
-  const [{ documents: matchedDocuments, sourceCount, failedDocuments }, isAdmin] = await Promise.all([
-    getDocumentIndex(query),
-    isAdminModeCookie(),
-  ]);
+  const { documents: matchedDocuments, sourceCount, failedDocuments } = await getDocumentIndex(query);
   const crossSearch = query ? searchOtherTools(query) : null;
 
   const categoryCounts = matchedDocuments.reduce<Record<CategoryTab, number>>(
@@ -247,7 +243,7 @@ export default async function Home({ searchParams }: HomeProps) {
                         </p>
                       </Link>
                       <div className="px-1">
-                        <CategorySelector slug={doc.slug} category={doc.category} compact editable={isAdmin} />
+                        <CategorySelector category={doc.category} compact />
                       </div>
                     </div>
                   ))}
@@ -290,7 +286,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   </SourceFileLink>
                 </div>
 
-                <CategorySelector slug={latestDocument.slug} category={latestDocument.category} editable={isAdmin} />
+                <CategorySelector category={latestDocument.category} />
               </article>
 
               <aside className="space-y-3 rounded-[1.35rem] bg-stone-50 p-4">

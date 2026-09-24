@@ -80,11 +80,7 @@ export default async function DocumentDetail({ params, searchParams }: DetailPro
                 近い文書を探す
               </Link>
             </div>
-            <CategorySelector
-              slug={doc.slug}
-              category={doc.category}
-              editable={isAdmin}
-            />
+            <CategorySelector category={doc.category} />
           </div>
 
           <aside className="self-start space-y-4 rounded-[1.5rem] bg-stone-50 p-4">

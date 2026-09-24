@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 
 type Props = {
@@ -10,7 +9,6 @@ type Props = {
 
 export function AdminBar({ isAdmin }: Props) {
   const router = useRouter();
-  const pathname = usePathname();
   const [showLogin, setShowLogin] = useState(false);
   const [token, setToken] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -50,22 +48,10 @@ export function AdminBar({ isAdmin }: Props) {
     });
   }
 
-  // 管理画面（/admin）ではヘッダーに同等の表示があるため、固定バーは出さない
-  // （下部の保存バーとの重なりを避けるため）。
-  if (isAdmin && pathname === "/admin") {
-    return null;
-  }
-
   if (isAdmin) {
     return (
       <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-amber-900 px-4 py-2 text-sm font-semibold text-white shadow-lg">
         <span>管理者モード中</span>
-        <Link
-          href="/admin"
-          className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium transition hover:bg-white/30"
-        >
-          管理画面
-        </Link>
         <button
           type="button"
           onClick={handleLogout}
@@ -101,7 +87,7 @@ export function AdminBar({ isAdmin }: Props) {
           <div className="w-full max-w-sm rounded-[2rem] bg-white p-6 shadow-2xl">
             <h2 className="text-xl font-semibold text-stone-900">管理者ログイン</h2>
             <p className="mt-2 text-sm leading-6 text-stone-500">
-              管理者パスワードを入力してください。ログイン後、カテゴリ設定と関連キーワードの編集ができます。
+              管理者パスワードを入力してください。ログイン後、関連キーワードの編集や更新情報の保存ができます。
             </p>
             <input
               type="password"
