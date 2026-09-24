@@ -1,4 +1,4 @@
-﻿# 週次監視 → 取り込み → 保存 → push を自動でまとめて実行する。
+﻿# 週次監視 → 取り込み → 保存 → スプレッドシート最新化 → push を自動でまとめて実行する。
 # Windowsのタスクスケジューラ「福祉サイト週次監視」から呼び出される想定。
 #
 # 手順:
@@ -6,7 +6,9 @@
 #   2. リポジトリを最新化（Obsidianの自動pushとの競合に備えてstash→rebase→pop）
 #   3. 今日分のレポートを ingest-watch-links.ts で取り込み
 #   4. ダウンロード可能なリンクを bulk-promote-watch-links.ts で保存
-#   5. push（Obsidianが割り込んでいた場合は一度だけ再試行）
+#   5. 新しく追加された資料をスプレッドシート（データベース）へ反映
+#      （export-to-sheet.ts。失敗してもサイト更新自体は止めない）
+#   6. push（Obsidianが割り込んでいた場合は一度だけ再試行）
 
 $ErrorActionPreference = "Stop"
 
@@ -70,6 +72,24 @@ try {
     npx tsx scripts/bulk-promote-watch-links.ts
     if ($LASTEXITCODE -ne 0) {
         throw "bulk-promote-watch-links.ts が失敗しました"
+    }
+
+    Write-Log "スプレッドシート（データベース）を最新化中..."
+    try {
+        npx tsx --env-file=.env.local --tsconfig tsconfig.json scripts/export-to-sheet.ts
+        if ($LASTEXITCODE -ne 0) {
+            throw "export-to-sheet.ts が失敗しました (exit $LASTEXITCODE)"
+        }
+
+        $baselineChanged = git status --porcelain -- data/sheet-sync-baseline.json
+        if ($baselineChanged) {
+            git add data/sheet-sync-baseline.json
+            git commit -m "Update sheet-sync baseline after weekly auto-promote" | Out-Null
+        }
+    }
+    catch {
+        # スプレッドシート反映が失敗しても、サイト本体の更新・pushは続行する。
+        Write-Log "警告: スプレッドシートの最新化に失敗しました（サイト更新は続行します）: $($_.Exception.Message)"
     }
 
     Write-Log "push中..."
