@@ -23,8 +23,7 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readSheetRows, writeSheetRows } from "../src/lib/google-sheets";
-import { generateDocumentIndexFile } from "../src/lib/documents";
-import { DOCUMENT_CATEGORY_LABELS } from "../src/lib/document-categories";
+import { generateDocumentIndexFile, parseCategoryAlias } from "../src/lib/documents";
 import { buildSheetRowsAndBaseline, writeBaseline, type SheetBaseline } from "./export-to-sheet";
 
 const execFileAsync = promisify(execFile);
@@ -99,10 +98,17 @@ async function main() {
     const base = baseline[slug];
 
     if (categoryIdx !== -1) {
-      const category = row[categoryIdx]?.trim();
-      if (category && category in DOCUMENT_CATEGORY_LABELS && base && base.category !== category) {
-        categoryMap[slug] = category;
-        categoryChanges += 1;
+      const categoryCell = row[categoryIdx]?.trim();
+      if (categoryCell && base && base.category !== categoryCell) {
+        const category = parseCategoryAlias(categoryCell);
+        if (!category) {
+          console.log(
+            `  無視: ${slug} の category「${categoryCell}」は認識できません（未分類/介護/障がい福祉/共通のいずれかにしてください）`,
+          );
+        } else {
+          categoryMap[slug] = category;
+          categoryChanges += 1;
+        }
       }
     }
 

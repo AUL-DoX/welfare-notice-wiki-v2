@@ -347,9 +347,14 @@ const CATEGORY_ALIASES: Record<string, DocumentCategory> = {
   未分類: "unclassified",
 };
 
-function parseCategory(value: unknown): DocumentCategory | undefined {
+/** "care" でも "介護" でも受け付けて DocumentCategory に正規化する。 */
+export function parseCategoryAlias(value: unknown): DocumentCategory | undefined {
   if (typeof value !== "string") return undefined;
   return CATEGORY_ALIASES[value.trim()] ?? undefined;
+}
+
+function parseCategory(value: unknown): DocumentCategory | undefined {
+  return parseCategoryAlias(value);
 }
 
 type MetaFrontmatter = {

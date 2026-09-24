@@ -105,3 +105,82 @@ export async function writeSheetRows(rows: string[][], range: string = DEFAULT_R
     throw new Error(`スプレッドシートへの書き込みに失敗しました（HTTP ${response.status}）。${detail.slice(0, 300)}`);
   }
 }
+
+async function batchUpdate(requests: object[]): Promise<void> {
+  const config = getConfig();
+  const accessToken = await getAccessToken(config);
+
+  const response = await fetch(`${SHEETS_API}/${config.sheetId}:batchUpdate`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ requests }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`スプレッドシートの更新に失敗しました（HTTP ${response.status}）。${detail.slice(0, 300)}`);
+  }
+}
+
+/** シート名から、batchUpdate 等で使う内部シートID（gid）を取得する。 */
+async function getSheetIdByTitle(range: string): Promise<number> {
+  const config = getConfig();
+  const accessToken = await getAccessToken(config);
+
+  const response = await fetch(`${SHEETS_API}/${config.sheetId}?fields=sheets.properties`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`スプレッドシートの情報取得に失敗しました（HTTP ${response.status}）。${detail.slice(0, 300)}`);
+  }
+
+  const data = (await response.json()) as {
+    sheets?: { properties?: { sheetId?: number; title?: string } }[];
+  };
+  const sheet = data.sheets?.find((s) => s.properties?.title === range);
+  if (!sheet?.properties?.sheetId && sheet?.properties?.sheetId !== 0) {
+    throw new Error(`シート「${range}」が見つかりませんでした。`);
+  }
+
+  return sheet.properties.sheetId;
+}
+
+/**
+ * 指定した列（0始まり）にドロップダウン（選択式）の入力規則を設定する。
+ * 既存の規則があれば上書きする。
+ */
+export async function setColumnDropdown(
+  columnIndex: number,
+  choices: string[],
+  options: { range?: string; startRow?: number; endRow?: number } = {},
+): Promise<void> {
+  const range = options.range ?? DEFAULT_RANGE;
+  const sheetId = await getSheetIdByTitle(range);
+
+  await batchUpdate([
+    {
+      setDataValidation: {
+        range: {
+          sheetId,
+          startRowIndex: options.startRow ?? 1, // ヘッダー行(0)は除く
+          endRowIndex: options.endRow ?? 2000,
+          startColumnIndex: columnIndex,
+          endColumnIndex: columnIndex + 1,
+        },
+        rule: {
+          condition: {
+            type: "ONE_OF_LIST",
+            values: choices.map((value) => ({ userEnteredValue: value })),
+          },
+          strict: true,
+          showCustomUi: true,
+        },
+      },
+    },
+  ]);
+}

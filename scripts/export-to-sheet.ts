@@ -1,6 +1,7 @@
 /**
- * 現在の全文書（slug / title / category / keywords）をGoogleスプレッドシートへ
- * 書き出す。既存のシートの内容は上書きされる。
+ * 現在の全文書（uploadedAt / slug / title / category / keywords）を
+ * Googleスプレッドシートへ書き出す。既存のシートの内容は上書きされる。
+ * category列にはドロップダウン（選択式）の入力規則も設定する。
  *
  * 同時に「基準値」（data/sheet-sync-baseline.json）も保存する。この基準値は
  * sync-from-sheet.ts が「シートで本当に人が編集したセルはどれか」を判定する
@@ -13,23 +14,32 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { getDocumentIndex } from "../src/lib/documents";
-import { writeSheetRows } from "../src/lib/google-sheets";
+import { writeSheetRows, setColumnDropdown } from "../src/lib/google-sheets";
+import { DOCUMENT_CATEGORY_LABELS } from "../src/lib/document-categories";
 
 const BASELINE_FILE_PATH = path.join(process.cwd(), "data", "sheet-sync-baseline.json");
+const HEADER = ["uploadedAt", "slug", "title", "category", "keywords"];
+const CATEGORY_COLUMN_INDEX = HEADER.indexOf("category");
 
 export type SheetBaseline = Record<string, { category: string; keywords: string }>;
+
+function formatUploadedAt(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+}
 
 export async function buildSheetRowsAndBaseline() {
   const { documents } = await getDocumentIndex();
 
-  const header = ["slug", "title", "category", "keywords"];
-  const rows: string[][] = [header];
+  const rows: string[][] = [HEADER];
   const baseline: SheetBaseline = {};
 
   for (const doc of documents) {
+    const categoryLabel = DOCUMENT_CATEGORY_LABELS[doc.category];
     const keywords = doc.manualKeywords.join(", ");
-    rows.push([doc.slug, doc.title, doc.category, keywords]);
-    baseline[doc.slug] = { category: doc.category, keywords };
+    rows.push([formatUploadedAt(doc.uploadedAt), doc.slug, doc.title, categoryLabel, keywords]);
+    baseline[doc.slug] = { category: categoryLabel, keywords };
   }
 
   return { rows, baseline };
@@ -45,6 +55,10 @@ async function main() {
 
   await writeSheetRows(rows);
   await writeBaseline(baseline);
+
+  await setColumnDropdown(CATEGORY_COLUMN_INDEX, Object.values(DOCUMENT_CATEGORY_LABELS), {
+    endRow: Math.max(rows.length + 200, 500),
+  });
 
   console.log(`${rows.length - 1}件をスプレッドシートへ書き出し、基準値を保存しました。`);
 }
