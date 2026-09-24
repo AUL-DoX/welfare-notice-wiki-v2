@@ -14,7 +14,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { getDocumentIndex } from "../src/lib/documents";
-import { writeSheetRows, setColumnDropdown } from "../src/lib/google-sheets";
+import { writeSheetRows, setColumnDropdown, clearAllDataValidation } from "../src/lib/google-sheets";
 import { DOCUMENT_CATEGORY_LABELS } from "../src/lib/document-categories";
 
 const BASELINE_FILE_PATH = path.join(process.cwd(), "data", "sheet-sync-baseline.json");
@@ -56,9 +56,11 @@ async function main() {
   await writeSheetRows(rows);
   await writeBaseline(baseline);
 
-  await setColumnDropdown(CATEGORY_COLUMN_INDEX, Object.values(DOCUMENT_CATEGORY_LABELS), {
-    endRow: Math.max(rows.length + 200, 500),
-  });
+  // 列構成が変わった場合などに、古い入力規則が別の列へ残留するのを防ぐため
+  // 一旦シート全体をクリアしてから、category列にだけ設定し直す。
+  const endRow = Math.max(rows.length + 200, 500);
+  await clearAllDataValidation({ endRow });
+  await setColumnDropdown(CATEGORY_COLUMN_INDEX, Object.values(DOCUMENT_CATEGORY_LABELS), { endRow });
 
   console.log(`${rows.length - 1}件をスプレッドシートへ書き出し、基準値を保存しました。`);
 }

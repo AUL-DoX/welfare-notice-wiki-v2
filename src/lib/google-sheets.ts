@@ -151,6 +151,37 @@ async function getSheetIdByTitle(range: string): Promise<number> {
 }
 
 /**
+ * シート全体の入力規則（ドロップダウン設定）をクリアする。
+ *
+ * 列の追加・並べ替えは値の上書き（values.update）だけでは行内容しか動かず、
+ * 入力規則は元の物理的な列位置に残り続けてしまう。手動で設定した古い
+ * ドロップダウンが、列がずれた後に別の列（例: titleなど）へ残留して混乱を
+ * 招くのを防ぐため、列を書き出すたびに一旦すべてクリアしてから、
+ * 必要な列にだけ setColumnDropdown で設定し直す。
+ */
+export async function clearAllDataValidation(
+  options: { range?: string; startRow?: number; endRow?: number; endColumn?: number } = {},
+): Promise<void> {
+  const range = options.range ?? DEFAULT_RANGE;
+  const sheetId = await getSheetIdByTitle(range);
+
+  await batchUpdate([
+    {
+      setDataValidation: {
+        range: {
+          sheetId,
+          startRowIndex: options.startRow ?? 0,
+          endRowIndex: options.endRow ?? 2000,
+          startColumnIndex: 0,
+          endColumnIndex: options.endColumn ?? 26,
+        },
+        // rule を省略すると、その範囲の入力規則がクリアされる。
+      },
+    },
+  ]);
+}
+
+/**
  * 指定した列（0始まり）にドロップダウン（選択式）の入力規則を設定する。
  * 既存の規則があれば上書きする。
  */
