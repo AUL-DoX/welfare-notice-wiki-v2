@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getDocumentIndex } from "@/lib/documents";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
-import { CategorySelector } from "@/components/category-selector";
 import { SourceFileLink } from "@/components/source-file-link";
 import { searchOtherTools } from "@/lib/cross-search";
 
@@ -9,6 +8,23 @@ export const dynamic = "force-dynamic";
 
 const CATEGORY_TAB_ORDER: DocumentCategory[] = ["care", "disability", "common", "unclassified"];
 type CategoryTab = DocumentCategory | "all";
+
+const CATEGORY_CHIP_CLASS: Record<DocumentCategory, string> = {
+  care: "border-sky-200 bg-sky-50 text-sky-900",
+  disability: "border-orange-200 bg-orange-50 text-orange-900",
+  common: "border-amber-200 bg-amber-50 text-amber-900",
+  unclassified: "border-rose-200 bg-rose-50 text-rose-900",
+};
+
+// 本文を抽出できなかった文書の定型文は、要約として表示しない
+// Markdown資料の要約に含まれる見出し記号（# など）を取り除く
+function cleanSummary(summary: string): string {
+  return summary.replace(/^#+\s*/, "").trim();
+}
+
+function hasUsableSummary(summary: string): boolean {
+  return summary.trim() !== "" && summary !== "本文を抽出できませんでした。";
+}
 
 function isDocumentCategory(value: string): value is DocumentCategory {
   return value in DOCUMENT_CATEGORY_LABELS;
@@ -49,7 +65,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   const documents =
     categoryFilter === "all" ? matchedDocuments : matchedDocuments.filter((doc) => doc.category === categoryFilter);
-  const latestDocument = documents[0] ?? null;
+  const latestDocuments = documents.slice(0, 5);
   const heading =
     categoryFilter === "all"
       ? query
@@ -224,91 +240,109 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           </div>
 
-          {latestDocument ? (
-            <section className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-white p-4 shadow-[0_12px_35px_rgba(62,45,24,0.06)] lg:grid-cols-[0.8fr_1.35fr_0.95fr] lg:items-start">
-              <aside className="rounded-[1.35rem] bg-stone-50 p-4">
-                <h3 className="text-lg font-semibold text-stone-900 md:text-xl">日付順一覧</h3>
-                <div className="mt-3 flex flex-col gap-3">
-                  {documents.map((doc) => (
-                    <div key={doc.slug} className="space-y-2">
-                      <Link
-                        href={`/docs/${encodeURIComponent(doc.slug)}`}
-                        className="block rounded-[1rem] bg-white px-4 py-3 transition hover:bg-amber-50"
-                      >
-                        <p className="text-sm font-medium text-stone-500 md:text-base">
-                          {formatDate(doc.uploadedAt)}
-                        </p>
-                        <p className="mt-1 text-base font-semibold leading-7 text-stone-900 md:text-lg">
-                          {doc.title}
-                        </p>
-                      </Link>
-                      <div className="px-1">
-                        <CategorySelector category={doc.category} compact />
-                      </div>
-                    </div>
-                  ))}
+          {latestDocuments.length > 0 ? (
+            <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-white p-4 shadow-[0_12px_35px_rgba(62,45,24,0.06)] lg:grid-cols-[0.85fr_1.5fr_0.8fr]">
+              {/* 左: 日付順一覧。高さは中央カラム（最新5件）に合わせ、はみ出す分は内部スクロール */}
+              <aside className="relative rounded-[1.35rem] bg-stone-50">
+                <div className="flex max-h-[28rem] flex-col p-4 lg:absolute lg:inset-0 lg:max-h-none">
+                  <h3 className="shrink-0 text-lg font-semibold text-stone-900 md:text-xl">日付順一覧</h3>
+                  <ul className="mt-3 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
+                    {documents.map((doc) => (
+                      <li key={doc.slug}>
+                        <Link
+                          href={`/docs/${encodeURIComponent(doc.slug)}`}
+                          className="block rounded-[1rem] bg-white px-3 py-2.5 transition hover:bg-amber-50"
+                        >
+                          <p className="flex flex-wrap items-center gap-2 text-xs font-medium text-stone-500">
+                            <span>{formatDate(doc.uploadedAt)}</span>
+                            <span className={`rounded-full border px-2 py-0.5 ${CATEGORY_CHIP_CLASS[doc.category]}`}>
+                              {DOCUMENT_CATEGORY_LABELS[doc.category]}
+                            </span>
+                          </p>
+                          <p className="mt-1 text-sm font-semibold leading-6 text-stone-900">{doc.title}</p>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </aside>
 
-              <article className="space-y-4 rounded-[1.35rem] border border-stone-200/70 bg-white px-4 py-4">
-                <div className="flex flex-wrap gap-2 text-xs font-medium text-stone-500">
-                  <Badge>{latestDocument.sourceType.toUpperCase()}</Badge>
-                  {latestDocument.issuer ? <Badge>{latestDocument.issuer}</Badge> : null}
-                  {latestDocument.publishedAt ? <Badge>{latestDocument.publishedAt}</Badge> : null}
-                  <Badge>{DOCUMENT_CATEGORY_LABELS[latestDocument.category]}</Badge>
-                </div>
+              {/* 中央: 新着記事（最新5件） */}
+              <div className="flex flex-col gap-3">
+                {latestDocuments.map((doc) => (
+                  <article key={doc.slug} className="rounded-[1.35rem] border border-stone-200/70 bg-white px-4 py-4">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-stone-500">
+                      <Badge>{doc.sourceType.toUpperCase()}</Badge>
+                      {doc.issuer ? <Badge>{doc.issuer}</Badge> : null}
+                      <span className={`rounded-full border px-3 py-1 ${CATEGORY_CHIP_CLASS[doc.category]}`}>
+                        {DOCUMENT_CATEGORY_LABELS[doc.category]}
+                      </span>
+                      <span>{formatDate(doc.uploadedAt)}</span>
+                    </div>
+                    <Link
+                      href={`/docs/${encodeURIComponent(doc.slug)}`}
+                      className="mt-2 block text-lg font-semibold leading-7 tracking-tight text-stone-900 hover:text-amber-900 md:text-xl"
+                    >
+                      {doc.title}
+                    </Link>
+                    {hasUsableSummary(doc.summary) ? (
+                      <p className="mt-1 line-clamp-2 text-sm leading-7 text-stone-600">{cleanSummary(doc.summary)}</p>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap gap-4">
+                      <Link
+                        href={`/docs/${encodeURIComponent(doc.slug)}`}
+                        className="text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
+                      >
+                        全文を見る
+                      </Link>
+                      <SourceFileLink
+                        slug={doc.slug}
+                        className="text-sm font-semibold text-stone-700 underline decoration-stone-300 underline-offset-4 transition hover:text-amber-900 hover:decoration-amber-900"
+                      >
+                        元ファイルを開く
+                      </SourceFileLink>
+                    </div>
+                  </article>
+                ))}
+              </div>
 
-                <div className="space-y-2">
-                  <p className="text-base font-medium text-stone-500 md:text-lg">新着記事</p>
-                  <Link
-                    href={`/docs/${encodeURIComponent(latestDocument.slug)}`}
-                    className="text-2xl font-semibold tracking-tight text-stone-900 hover:text-amber-900 md:text-[2rem]"
-                  >
-                    {latestDocument.title}
-                  </Link>
-                  <p className="text-lg leading-8 text-stone-700 md:text-xl">{latestDocument.summary}</p>
-                </div>
-
-                <p className="text-lg leading-8 text-stone-700 md:text-[1.15rem]">{latestDocument.preview}</p>
-
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    href={`/docs/${encodeURIComponent(latestDocument.slug)}`}
-                    className="text-base font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900 md:text-lg"
-                  >
-                    全文を見る
-                  </Link>
-                  <SourceFileLink
-                    slug={latestDocument.slug}
-                    className="text-base font-semibold text-stone-700 underline decoration-stone-300 underline-offset-4 transition hover:text-amber-900 hover:decoration-amber-900 md:text-lg"
-                  >
-                    元ファイルを開く
-                  </SourceFileLink>
-                </div>
-
-                <CategorySelector category={latestDocument.category} />
-              </article>
-
-              <aside className="space-y-3 rounded-[1.35rem] bg-stone-50 p-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-stone-900 md:text-xl">関連キーワード</h3>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {latestDocument.relatedTerms.length > 0 ? (
-                      latestDocument.relatedTerms.slice(0, 10).map((term) => (
-                        <Link
-                          key={term}
-                          href={`/docs/${encodeURIComponent(latestDocument.slug)}?focus=${encodeURIComponent(term)}`}
-                          className="rounded-full bg-white px-3 py-2 text-sm font-medium text-stone-700 transition hover:bg-amber-100 hover:text-amber-900 md:text-base"
-                        >
-                          {term}
-                        </Link>
-                      ))
-                    ) : (
-                      <p className="rounded-[1rem] bg-white px-4 py-3 text-base text-stone-500 md:text-lg">
-                        キーワードは詳細画面から追加できます。
-                      </p>
-                    )}
+              {/* 右: 請求でお困りの方へ（ツール案内）＋このWikiについて */}
+              <aside className="flex flex-col gap-3">
+                <div className="rounded-[1.35rem] border border-orange-200 bg-orange-50 p-4">
+                  <p className="text-xs font-semibold tracking-[0.15em] text-orange-900/70">請求でお困りの方へ</p>
+                  <h3 className="mt-1 text-lg font-semibold leading-7 text-orange-950">
+                    仮審査エラー・返戻が届いたとき
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-stone-700">
+                    国保連への請求後に届くエラーや返戻の内容から、対応方法を探せます。
+                  </p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    <Link
+                      href="/henrei-search"
+                      className="rounded-full bg-orange-500 px-4 py-2.5 text-center text-sm font-bold text-black transition hover:bg-orange-600"
+                    >
+                      返戻対応マニュアル検索 →
+                    </Link>
+                    <Link
+                      href="/shogai-error-search"
+                      className="rounded-full border border-sky-300 bg-white px-4 py-2.5 text-center text-sm font-bold text-sky-900 transition hover:bg-sky-50"
+                    >
+                      障がい福祉エラーコード検索 →
+                    </Link>
                   </div>
+                </div>
+
+                <div className="rounded-[1.35rem] bg-stone-50 p-4">
+                  <h3 className="text-lg font-semibold text-stone-900">このWikiについて</h3>
+                  <p className="mt-2 text-sm leading-7 text-stone-700">
+                    厚生労働省や自治体などが公開する通知文・資料を収集し、介護と障がい福祉の分野別に検索できるようにしたWikiです。毎週、新しい資料を取り込んでいます。
+                  </p>
+                  <Link
+                    href="/updates"
+                    className="mt-2 inline-block text-sm font-semibold text-amber-900 underline decoration-stone-300 underline-offset-4 transition hover:decoration-amber-900"
+                  >
+                    更新情報を見る →
+                  </Link>
                 </div>
               </aside>
             </section>
