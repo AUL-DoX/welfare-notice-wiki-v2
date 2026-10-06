@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isAdminModeToken, isAdminModeCookie } from "@/lib/admin";
 import { getDocumentBySlug } from "@/lib/documents";
+import { getSeoOverride } from "@/lib/seo-overrides";
 import { DOCUMENT_CATEGORY_LABELS } from "@/lib/document-categories";
 import { CategorySelector } from "@/components/category-selector";
 import { DocumentDetailClient } from "@/components/document-detail-client";
@@ -23,6 +24,16 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
   const { slug } = await params;
   const doc = await getDocumentBySlug(decodeURIComponent(slug));
   if (!doc) return {};
+
+  const seo = getSeoOverride(doc.slug);
+  if (seo) {
+    return {
+      title: { absolute: seo.title },
+      description: seo.description,
+      keywords: doc.keywords,
+      openGraph: { title: seo.title, description: seo.description },
+    };
+  }
 
   const keywordStr = doc.keywords.slice(0, 6).join("、");
   return {
@@ -47,6 +58,8 @@ export default async function DocumentDetail({ params, searchParams }: DetailPro
     notFound();
   }
 
+  const seo = getSeoOverride(doc.slug);
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7f4ec_0%,#fafaf7_50%,#eef1e7_100%)] px-5 py-6 text-stone-900 lg:px-8 lg:py-7">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
@@ -63,8 +76,8 @@ export default async function DocumentDetail({ params, searchParams }: DetailPro
               <Badge>{DOCUMENT_CATEGORY_LABELS[doc.category]}</Badge>
             </div>
             <div>
-              <h1 className="text-4xl font-semibold tracking-tight text-stone-900">{doc.title}</h1>
-              <p className="mt-3 text-xl leading-10 text-stone-700">{doc.summary}</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-stone-900">{seo?.h1 ?? doc.title}</h1>
+              <p className="mt-3 text-xl leading-10 text-stone-700">{seo?.intro ?? doc.summary}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <SourceFileLink
