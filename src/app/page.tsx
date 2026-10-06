@@ -309,25 +309,30 @@ export default async function Home({ searchParams }: HomeProps) {
               {/* 右: 請求でお困りの方へ（ツール案内）＋このWikiについて */}
               <aside className="flex flex-col gap-3">
                 <div className="rounded-[1.35rem] border border-orange-200 bg-orange-50 p-4">
-                  <p className="text-xs font-semibold tracking-[0.15em] text-orange-900/70">請求でお困りの方へ</p>
-                  <h3 className="mt-1 text-lg font-semibold leading-7 text-orange-950">
-                    仮審査エラー・返戻が届いたとき
+                  <h3 className="text-lg font-semibold leading-7 text-orange-950">
+                    返戻・仮審査エラー、どうすればいい？
                   </h3>
                   <p className="mt-2 text-sm leading-7 text-stone-700">
-                    国保連への請求後に届くエラーや返戻の内容から、対応方法を探せます。
+                    国保連への請求でエラーや返戻が届いたときの、違い・確認すること・調べ方をまとめました。
                   </p>
                   <div className="mt-3 flex flex-col gap-2">
                     <Link
-                      href="/henrei-search"
+                      href="/henrei-guide"
                       className="rounded-full bg-orange-500 px-4 py-2.5 text-center text-sm font-bold text-black transition hover:bg-orange-600"
                     >
-                      返戻対応マニュアル検索 →
+                      対応ガイドを見る →
+                    </Link>
+                    <Link
+                      href="/henrei-search"
+                      className="rounded-full border border-orange-300 bg-white px-4 py-2 text-center text-sm font-semibold text-orange-900 transition hover:bg-orange-100"
+                    >
+                      返戻対応マニュアル検索
                     </Link>
                     <Link
                       href="/shogai-error-search"
-                      className="rounded-full border border-sky-300 bg-white px-4 py-2.5 text-center text-sm font-bold text-sky-900 transition hover:bg-sky-50"
+                      className="rounded-full border border-sky-300 bg-white px-4 py-2 text-center text-sm font-semibold text-sky-900 transition hover:bg-sky-50"
                     >
-                      障がい福祉エラーコード検索 →
+                      障がい福祉エラーコード検索
                     </Link>
                   </div>
                 </div>
