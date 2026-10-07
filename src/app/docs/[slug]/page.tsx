@@ -25,10 +25,12 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
   const doc = await getDocumentBySlug(decodeURIComponent(slug));
   if (!doc) return {};
 
+  const canonicalPath = `/docs/${encodeURIComponent(doc.slug)}`;
   const seo = getSeoOverride(doc.slug);
   if (seo) {
     return {
       title: { absolute: seo.title },
+      alternates: { canonical: canonicalPath },
       description: seo.description,
       keywords: doc.keywords,
       openGraph: { title: seo.title, description: seo.description },
@@ -38,6 +40,7 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
   const keywordStr = doc.keywords.slice(0, 6).join("、");
   return {
     title: `${doc.title} | 福祉通知Wiki`,
+    alternates: { canonical: canonicalPath },
     description: doc.summary
       ? `${doc.summary.slice(0, 100)}　キーワード：${keywordStr}`
       : `${doc.title}のページです。キーワード：${keywordStr}`,

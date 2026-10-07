@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getDocumentIndex } from "@/lib/documents";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
@@ -44,6 +45,16 @@ type HomeProps = {
     category?: string;
   }>;
 };
+
+// 検索結果・カテゴリ絞り込みのURLは、トップページと同じ作りで内容が重複するため、
+// インデックス対象から外す（リンクはたどらせる）。素のトップページだけを正規とする。
+export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
+  const params = await searchParams;
+  if (params.q || params.category) {
+    return { robots: { index: false, follow: true } };
+  }
+  return { alternates: { canonical: "/" } };
+}
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;

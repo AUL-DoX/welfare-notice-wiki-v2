@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://wn-wiki.aul-dox.jp"),
   title: "介護と障害福祉サービスの通知文Wiki",
   description:
     "介護と障害福祉サービスの通知文を検索し、詳細ページで該当の単語や文章を強調表示できる検索ページです。",
