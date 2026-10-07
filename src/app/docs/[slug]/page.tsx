@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { isAdminModeToken, isAdminModeCookie } from "@/lib/admin";
 import { getDocumentBySlug } from "@/lib/documents";
 import { getSeoOverride } from "@/lib/seo-overrides";
+import { getRedirectedSlug } from "@/lib/slug-redirects";
 import { DOCUMENT_CATEGORY_LABELS } from "@/lib/document-categories";
 import { CategorySelector } from "@/components/category-selector";
 import { DocumentDetailClient } from "@/components/document-detail-client";
@@ -58,6 +59,11 @@ export default async function DocumentDetail({ params, searchParams }: DetailPro
   const isAdmin = isAdminModeToken(admin) || isAdminFromCookie;
 
   if (!doc) {
+    // URL（slug）が変わった資料の古いURLは、新しいURLへ恒久転送する。
+    const redirectedSlug = getRedirectedSlug(decodeURIComponent(slug));
+    if (redirectedSlug) {
+      permanentRedirect(`/docs/${encodeURIComponent(redirectedSlug)}`);
+    }
     notFound();
   }
 
