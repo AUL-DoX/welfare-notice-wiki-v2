@@ -34,7 +34,8 @@ export async function generateMetadata({ params }: DetailProps): Promise<Metadat
       alternates: { canonical: canonicalPath },
       description: seo.description,
       keywords: doc.keywords,
-      openGraph: { title: seo.title, description: seo.description },
+      // 独自のopenGraphを定義すると app/opengraph-image.png が引き継がれないため、画像を明示する。
+      openGraph: { title: seo.title, description: seo.description, images: ["/opengraph-image.png"] },
     };
   }
 
