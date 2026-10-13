@@ -65,6 +65,34 @@ export default function HenreiGuidePage() {
         </section>
 
         <section className="space-y-3">
+          <h2 className={h2Class}>仮審査処理結果票の見方</h2>
+          <p className={pClass}>
+            北海道国保連の案内では、仮審査は毎月8日〜10日頃に行われ、エラーや警告があった請求には「仮審査処理結果票」が送信されます（毎月9日〜11日頃。正常だった場合は送信されません）。結果票の先頭の記号で、次のように区別されます。
+          </p>
+          <ul className="list-disc space-y-1 pl-6 leading-8 text-stone-700">
+            <li>記号なし：エラー</li>
+            <li>「※」：警告</li>
+            <li>「▲」：警告（重度）</li>
+            <li>「★」：警告（エラー移行対象）。今後、警告ではなくエラーに移行するため、見直しが必要です</li>
+          </ul>
+          <p className={pClass}>
+            請求内容を修正するときは、取下げを行ってから修正データを送信します。取下げをせずに再送信すると、既存の請求情報と重複して、重複エラーになります。
+          </p>
+          <p className="text-sm leading-7 text-stone-600">
+            出典：
+            <a
+              href="https://www.hokkaido-kokuhoren.or.jp/files/00000400/00000442/03_karishinsa_20181101.pdf"
+              className="underline underline-offset-4 hover:text-amber-900"
+              target="_blank"
+              rel="noreferrer"
+            >
+              北海道国民健康保険団体連合会「請求情報に対する仮審査について」（2018年10月作成）
+            </a>
+            。日程や運用は変わることがあるため、最新の案内は国保連の「電子請求受付システム」のお知らせでご確認ください。
+          </p>
+        </section>
+
+        <section className="space-y-3">
           <h2 className={h2Class}>返戻とは</h2>
           <p className={pClass}>
             本審査（10日の締切後に行われる国保連や自治体の審査）の結果、請求データに誤りや不備があり、請求が受け付けられずに事業所へ差し戻されることです。返戻になった分の給付費（報酬）は、当月は支払われません。
