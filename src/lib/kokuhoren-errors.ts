@@ -39,6 +39,33 @@ export interface KokuhorenError {
   sourceKind: string;
 }
 
+// 項目の先頭を示す記号（①、・、→、※、(1) など）。この記号で始まる行は前の行に連結しない。
+const ITEM_START = /^(?:[①-⑳㉑-㉟・●○◆■□▼▲★→⇒※＊*＜<＞(（]|[0-9０-９]+[.．)）]|[-－—]\s)/;
+// 行末が読点のときだけ、文の途中で折り返された行とみなして次の行へつなぐ（別の文を誤って結合しないため）。
+const JOINS_NEXT = /[、，,]$/;
+
+/**
+ * PDFの組版で入った途中の改行・余分な空白を整える（表示専用。文言は変えない）。
+ * 読点で終わる行だけ次の行へつなぎ、それ以外の改行は残す。
+ */
+export function tidyText(text: string): string {
+  const lines = text
+    .split("\n")
+    .map((l) => l.replace(/[ \t　]{2,}/g, " ").trim())
+    .filter((l) => l !== "" && !/^[－\-—]{5,}$/.test(l));
+  const out: string[] = [];
+  for (const line of lines) {
+    const prev = out[out.length - 1];
+    if (prev !== undefined && JOINS_NEXT.test(prev) && !ITEM_START.test(line)) {
+      const needSpace = /[A-Za-z0-9]$/.test(prev) && /^[A-Za-z0-9]/.test(line);
+      out[out.length - 1] = prev + (needSpace ? " " : "") + line;
+    } else {
+      out.push(line);
+    }
+  }
+  return out.join("\n");
+}
+
 const CODE_PATTERN = /^[A-Z0-9]{2,8}$/;
 
 const SRC_HOKKAIDO_KAIGO = "北海道国民健康保険団体連合会";
@@ -58,9 +85,9 @@ function buildKaigo(): KokuhorenError[] {
       const blocks: ContentBlock[] = parseContent(e.content);
       for (const b of blocks) {
         if (b.type !== "section") continue;
-        if (b.label === "原因") cause = b.text;
-        else if (b.label === "対応方法") remedy = b.text;
-        else extraBlocks.push({ label: b.label, text: b.text });
+        if (b.label === "原因") cause = tidyText(b.text);
+        else if (b.label === "対応方法") remedy = tidyText(b.text);
+        else extraBlocks.push({ label: b.label, text: tidyText(b.text) });
       }
     }
     result.push({
@@ -91,8 +118,8 @@ function buildShogai(): KokuhorenError[] {
       key,
       code: e.code,
       title: e.title,
-      cause: e.cause,
-      remedy: e.remedy,
+      cause: e.cause ? tidyText(e.cause) : undefined,
+      remedy: e.remedy ? tidyText(e.remedy) : undefined,
       extraBlocks: [],
       detailed: !brief,
       sourceName: brief ? SRC_MHLW : SRC_HOKKAIDO_SHOGAI,
