@@ -4,6 +4,8 @@ import { getDocumentIndex } from "@/lib/documents";
 import { DOCUMENT_CATEGORY_LABELS, type DocumentCategory } from "@/lib/document-categories";
 import { SourceFileLink } from "@/components/source-file-link";
 import { searchOtherTools } from "@/lib/cross-search";
+import { JsonLd } from "@/components/json-ld";
+import { BASE_URL } from "@/lib/kokuhoren-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -88,6 +90,24 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f5f1e8_0%,#fcfbf8_26%,#f2f4ec_100%)] text-stone-900">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "介護と障害福祉サービスの通知文Wiki",
+          alternateName: "wn-wiki",
+          url: BASE_URL,
+          inLanguage: "ja",
+          description:
+            "介護・障がい福祉の通知文の全文検索と、国保連請求エラーコードの検索ができる実務リファレンス。",
+          publisher: { "@type": "Organization", name: "AUL DoX", url: "https://aul-dox.jp" },
+          potentialAction: {
+            "@type": "SearchAction",
+            target: { "@type": "EntryPoint", urlTemplate: `${BASE_URL}/?q={search_term_string}` },
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-5 lg:px-8 lg:py-6">
         <section className="grid gap-4 rounded-[2rem] border border-stone-200/70 bg-white/90 p-5 shadow-[0_24px_70px_rgba(55,43,24,0.08)] backdrop-blur">
           <div className="space-y-3">
@@ -332,6 +352,12 @@ export default async function Home({ searchParams }: HomeProps) {
                       className="rounded-full bg-orange-500 px-4 py-2.5 text-center text-sm font-bold text-black transition hover:bg-orange-600"
                     >
                       対応ガイドを見る →
+                    </Link>
+                    <Link
+                      href="/kokuhoren-error"
+                      className="rounded-full border border-orange-300 bg-white px-4 py-2 text-center text-sm font-semibold text-orange-900 transition hover:bg-orange-100"
+                    >
+                      国保連請求エラー検索
                     </Link>
                     <Link
                       href="/henrei-search"

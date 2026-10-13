@@ -12,6 +12,9 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-stone-200/70 bg-white/80">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-5 py-6 lg:px-8">
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="サイト情報">
+          <Link href="/about" className={linkClass}>
+            このサイトについて
+          </Link>
           <Link href="/privacy" className={linkClass}>
             プライバシーポリシー
           </Link>

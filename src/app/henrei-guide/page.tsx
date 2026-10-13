@@ -90,7 +90,13 @@ export default function HenreiGuidePage() {
 
         <section className="space-y-3">
           <h2 className={h2Class}>エラーの調べ方</h2>
-          <p className={pClass}>エラーコードやメッセージが分かれば、次の検索ツールで原因と対処を調べられます。</p>
+          <p className={pClass}>
+            エラーコードやメッセージが分かれば、
+            <Link href="/kokuhoren-error" className="font-medium underline underline-offset-4 hover:text-amber-900">
+              国保連請求エラー検索
+            </Link>
+            で原因と対処を調べられます。マニュアル全体から探すときは、次の検索ツールもご利用ください。
+          </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-[1.35rem] border border-orange-200 bg-orange-50 p-4">
               <h3 className="text-lg font-semibold text-orange-950">介護給付費等の場合</h3>

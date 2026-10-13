@@ -40,6 +40,17 @@ export async function GET() {
     lines.push("");
   }
 
+  lines.push("## 国保連請求エラー検索");
+  lines.push("");
+  lines.push(
+    `- [国保連請求エラー検索（ハブ）](${BASE_URL}/kokuhoren-error): 介護・障がい福祉の国保連請求エラーを、コードから原因・確認事項・対応方法・一次情報までたどれます`
+  );
+  lines.push(`- [介護のエラーコード一覧](${BASE_URL}/kokuhoren-error/kaigo)`);
+  lines.push(`- [障がい福祉のエラーコード一覧](${BASE_URL}/kokuhoren-error/shogai)`);
+  lines.push(`- [返戻・仮審査エラー、どうすればいい？](${BASE_URL}/henrei-guide)`);
+  lines.push(`- [このサイトについて](${BASE_URL}/about)`);
+  lines.push("");
+
   lines.push("## その他");
   lines.push("");
   lines.push(`- [全文検索](${BASE_URL}/)`);

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/", label: "トップページ" },
   { href: "/updates", label: "更新情報" },
+  { href: "/kokuhoren-error", label: "国保連請求エラー検索" },
   { href: "/henrei-search", label: "返戻対応マニュアル検索" },
   { href: "/shogai-error-search", label: "障がい福祉エラーコード検索" },
 ];
