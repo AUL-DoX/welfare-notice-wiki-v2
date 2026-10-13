@@ -128,7 +128,7 @@ export function HenreiSearchView() {
               if (event.target === event.currentTarget) setOpenKey(null);
             }}
           >
-            <DetailPanel entry={openEntry} onClose={() => setOpenKey(null)} />
+            <DetailPanel entry={openEntry} entryKey={openKey} onClose={() => setOpenKey(null)} />
           </div>
         ) : null}
       </div>
@@ -504,7 +504,17 @@ function Highlighted({ text, term }: { text: string; term: string }) {
   );
 }
 
-function DetailPanel({ entry, onClose }: { entry: HenreiEntry; onClose: () => void }) {
+function DetailPanel({
+  entry,
+  entryKey,
+  onClose,
+}: {
+  entry: HenreiEntry;
+  entryKey: string | null;
+  onClose: () => void;
+}) {
+  // コード別ページがあるのは、コードが英数字の通常のエラーのみ
+  const pageKey = entryKey && entry.code && /^[A-Z0-9]{2,8}$/.test(entry.code) ? entryKey : null;
   const brief = isBrief(entry);
 
   return (
@@ -523,6 +533,14 @@ function DetailPanel({ entry, onClose }: { entry: HenreiEntry; onClose: () => vo
         </button>
       </div>
       <div className="aulrtm-detail-title">{entry.title}</div>
+      {pageKey ? (
+        <a
+          href={`/kokuhoren-error/kaigo/${encodeURIComponent(pageKey)}`}
+          style={{ display: "inline-block", margin: "6px 0 10px", fontWeight: 700, textDecoration: "underline" }}
+        >
+          このエラーの個別ページを開く →
+        </a>
+      ) : null}
 
       {brief ? (
         <>

@@ -130,7 +130,7 @@ export function ShogaiErrorSearchView() {
               if (event.target === event.currentTarget) setOpenKey(null);
             }}
           >
-            <DetailPanel entry={openEntry} onClose={() => setOpenKey(null)} />
+            <DetailPanel entry={openEntry} entryKey={openKey} onClose={() => setOpenKey(null)} />
           </div>
         ) : null}
       </div>
@@ -504,7 +504,15 @@ function Highlighted({ text, term }: { text: string; term: string }) {
   );
 }
 
-function DetailPanel({ entry, onClose }: { entry: ShogaiEntry; onClose: () => void }) {
+function DetailPanel({
+  entry,
+  entryKey,
+  onClose,
+}: {
+  entry: ShogaiEntry;
+  entryKey: string | null;
+  onClose: () => void;
+}) {
   const brief = isBrief(entry);
 
   return (
@@ -521,6 +529,14 @@ function DetailPanel({ entry, onClose }: { entry: ShogaiEntry; onClose: () => vo
         </button>
       </div>
       <div className="aulssw-detail-title">{entry.title}</div>
+      {entryKey ? (
+        <a
+          href={`/kokuhoren-error/shogai/${encodeURIComponent(entryKey)}`}
+          style={{ display: "inline-block", margin: "6px 0 10px", fontWeight: 700, textDecoration: "underline" }}
+        >
+          このエラーの個別ページを開く →
+        </a>
+      ) : null}
 
       {brief ? (
         <>
