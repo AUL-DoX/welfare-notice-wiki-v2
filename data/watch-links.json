@@ -2,6 +2,38 @@
   "items": [
     {
       "source": "札幌市 福祉・介護",
+      "title": "事業概要 令和５年度版(令和４年度実績)を公開しました。（10月23日）",
+      "url": "https://www.city.sapporo.jp/kosei-sodan/gaiyou.html",
+      "id": "7c277d4c20d8e672",
+      "collectedAt": "2026-10-23T15:00:00.000Z",
+      "promotedSlug": "事業概要-令和5年度版-令和4年度実績-を公開しました-10月23日"
+    },
+    {
+      "source": "札幌市 福祉・介護",
+      "title": "「さっぽろ年末生活サポート相談会」を開催します！（10月19日）",
+      "url": "https://www.city.sapporo.jp/hokenfukushi/hoshi-bosyu/step_r8nenmatsu.html",
+      "id": "a1758ba1768278cf",
+      "collectedAt": "2026-10-23T15:00:00.000Z",
+      "promotedSlug": "さっぽろ年末生活サポート相談会-を開催します-10月19日"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報Vol.1548（介護現場において事故が発生した際の報告について）［700KB］",
+      "url": "https://www.mhlw.go.jp/content/001761586.pdf",
+      "id": "504a0f824aa0a26e",
+      "collectedAt": "2026-10-23T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1548-介護現場において事故が発生した際の報告について-700kb"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報Vol.1547（特定福祉用具販売・住宅改修の給付分析に向けた介護保険システム標準仕様書の改定に関する検討について（ご連絡））［521KB］",
+      "url": "https://www.mhlw.go.jp/content/001761469.pdf",
+      "id": "6e02924be07299b3",
+      "collectedAt": "2026-10-23T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1547-特定福祉用具販売-住宅改修の給付分析に向けた介護保険システム標準仕様書の改定に関する検討に"
+    },
+    {
+      "source": "札幌市 福祉・介護",
       "title": "医療的ケア児の受入れに係る指定の取扱いについて（10月16日）",
       "url": "https://www.city.sapporo.jp/shogaifukushi/siteisidou/senteiikea.html",
       "id": "2bc360131c8dfe88",
