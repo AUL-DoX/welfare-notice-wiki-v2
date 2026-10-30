@@ -1,6 +1,30 @@
 {
   "items": [
     {
+      "source": "厚生労働省 介護保険最新情報（統計・報告）",
+      "title": "2026年10月30日掲載 介護給付費等実態統計月報（令和８（2026）年７月審査分） NEW",
+      "url": "https://www.mhlw.go.jp/toukei/saikin/hw/kaigo/kyufu/2026/07.html",
+      "id": "b34db828e28cd179",
+      "collectedAt": "2026-10-30T15:00:00.000Z",
+      "promotedSlug": "2026年10月30日掲載-介護給付費等実態統計月報-令和8-2026-年7月審査分-new"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険制度における預貯金等の把握等に係る検討の場中間とりまとめについて［2.5MB］",
+      "url": "https://www.mhlw.go.jp/content/001763099.pdf",
+      "id": "3c333b78966363a6",
+      "collectedAt": "2026-10-30T15:00:00.000Z",
+      "promotedSlug": "介護保険制度における預貯金等の把握等に係る検討の場中間とりまとめについて-2-5mb"
+    },
+    {
+      "source": "厚生労働省 介護保険最新情報（通知）",
+      "title": "介護保険最新情報Vol.1549（「介護保険の給付対象となる福祉用具及び住宅改修の取扱いについて」の一部改正について）［426KB］",
+      "url": "https://www.mhlw.go.jp/content/001762862.pdf",
+      "id": "9d779abcd0e1bc73",
+      "collectedAt": "2026-10-30T15:00:00.000Z",
+      "promotedSlug": "介護保険最新情報vol-1549-介護保険の給付対象となる福祉用具及び住宅改修の取扱いについて-の一部改正について-426kb"
+    },
+    {
       "source": "札幌市 福祉・介護",
       "title": "事業概要 令和５年度版(令和４年度実績)を公開しました。（10月23日）",
       "url": "https://www.city.sapporo.jp/kosei-sodan/gaiyou.html",
