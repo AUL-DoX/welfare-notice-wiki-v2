@@ -1,6 +1,30 @@
 {
   "items": [
     {
+      "source": "厚生労働省 介護保険最新情報（統計・報告）",
+      "title": "2026年11月10日掲載 介護保険事業状況報告（暫定）（令和８年８月分） NEW",
+      "url": "https://www.mhlw.go.jp/topics/kaigo/osirase/jigyo/m26/2608.html",
+      "id": "6698f0df39193480",
+      "collectedAt": "2026-11-13T15:00:00.000Z",
+      "promotedSlug": "2026年11月10日掲載-介護保険事業状況報告-暫定-令和8年8月分-new"
+    },
+    {
+      "source": "厚生労働省 障害者福祉",
+      "title": "2026年11月10日掲載 第60回「ねむの木賞」「高木賞」の贈呈式が行われます NEW",
+      "url": "https://www.mhlw.go.jp/stf/newpage_77319.html",
+      "id": "681393bfefa2feca",
+      "collectedAt": "2026-11-13T15:00:00.000Z",
+      "promotedSlug": "2026年11月10日掲載-第60回-ねむの木賞-高木賞-の贈呈式が行われます-new"
+    },
+    {
+      "source": "厚生労働省 障害者福祉",
+      "title": "2026年9月28日更新 第11回 障害者文化芸術活動推進有識者会議",
+      "url": "https://www.mhlw.go.jp/stf/newpage_76274.html",
+      "id": "7eb3af3d70b5b347",
+      "collectedAt": "2026-11-13T15:00:00.000Z",
+      "promotedSlug": "2026年9月28日更新-第11回-障害者文化芸術活動推進有識者会議"
+    },
+    {
       "source": "札幌市 福祉・介護",
       "title": "「要介護認定更新手続きのご案内」の終了について（11月6日）",
       "url": "https://www.city.sapporo.jp/kaigo/k100citizen/k141_9kansyo.html",
